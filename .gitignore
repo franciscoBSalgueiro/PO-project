@@ -1,0 +1,6 @@
+CVS/
+.idea/
+*.class
+*.jar
+bin/
+.settings/

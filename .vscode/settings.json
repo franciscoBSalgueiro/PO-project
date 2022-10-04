@@ -1,0 +1,7 @@
+{
+    "java.project.sourcePaths": [
+        "po-uilib/src",
+        "prr-core/src",
+        "prr-app/src"
+    ],
+}
