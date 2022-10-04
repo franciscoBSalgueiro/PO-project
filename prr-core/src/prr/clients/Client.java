@@ -35,6 +35,6 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
 
         @Override
         public String toString() {
-                return "CLIENT|" + _id + "|" + _name + "|" + _taxId + "|" + _type; // type|notifications|terminals|payments|debts
+                return "CLIENT|" + _id + "|" + _name + "|" + _taxId + "|" + _type; // |notifications|terminals|payments|debts
         }
 }

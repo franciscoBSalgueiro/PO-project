@@ -3,10 +3,13 @@ package prr;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import prr.app.exceptions.DuplicateClientKeyException;
 import prr.clients.Client;
 import prr.exceptions.UnrecognizedEntryException;
 import prr.terminals.Terminal;
+import pt.tecnico.uilib.menus.CommandException;
 
 // FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
 
@@ -17,11 +20,11 @@ public class Network implements Serializable {
 	/** Serial number for serialization. */
 	private static final long serialVersionUID = 202208091753L;
 
-	ArrayList<Client> _clients;
+	HashMap<String, Client> _clients;
 	ArrayList<Terminal> _terminals;
 
 	public Network() {
-		_clients = new ArrayList<Client>();
+		_clients = new HashMap<String, Client>();
 		_terminals = new ArrayList<Terminal>();
 	}
 
@@ -41,15 +44,22 @@ public class Network implements Serializable {
 		// FIXME implement method
 	}
 
-	public ArrayList<Client> getAllClients() {
+	public HashMap<String, Client> getAllClients() {
 		return _clients;
+	}
+
+	public Client getClient(String id) {
+		return _clients.get(id);
 	}
 
 	public ArrayList<Terminal> getAllTerminals() {
 		return _terminals;
 	}
 
-	public void registerClient(String id, String name, int taxId) {
-		_clients.add(new Client(id, name, taxId));
+	public void registerClient(String id, String name, int taxId) throws CommandException {
+		if (_clients.containsKey(id)) {
+			throw new DuplicateClientKeyException(id);
+		}
+		_clients.put(id, new Client(id, name, taxId));
 	}
 }
