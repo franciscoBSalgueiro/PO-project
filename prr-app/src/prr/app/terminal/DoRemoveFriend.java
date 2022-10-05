@@ -12,11 +12,13 @@ class DoRemoveFriend extends TerminalCommand {
 
 	DoRemoveFriend(Network context, Terminal terminal) {
 		super(Label.REMOVE_FRIEND, context, terminal);
-		//FIXME add command fields
+		super.addStringField("key", Prompt.terminalKey());
 	}
 
 	@Override
 	protected final void execute() throws CommandException {
-                //FIXME implement command
+		String key = super.stringField("key");
+		Terminal friend = _network.getTerminal(key);
+		_receiver.removeFriend(friend);
 	}
 }

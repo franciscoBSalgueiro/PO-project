@@ -20,6 +20,7 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
         private int _taxId;
         private ClientType _type;
         private List<Terminal> _terminals;
+        private boolean activeNotifications;
 
         public Client(String key, String name, int taxId) {
                 _key = key;
@@ -27,6 +28,7 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
                 _taxId = taxId;
                 _type = new NormalClient();
                 _terminals = new ArrayList<Terminal>();
+                activeNotifications = true;
         }
 
         // FIXME define attributes
@@ -39,6 +41,14 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
 
         public void addTerminal(Terminal t) {
                 _terminals.add(t);
+        }
+
+        public void enableNotifications() {
+                activeNotifications = true;
+        }
+
+        public void disableNotifications() {
+                activeNotifications = false;
         }
 
         @Override
