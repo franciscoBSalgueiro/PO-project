@@ -16,6 +16,6 @@ class DoTurnOffTerminal extends TerminalCommand {
 
 	@Override
 	protected final void execute() throws CommandException {
-                //FIXME implement command
+        _receiver.turnOff();
 	}
 }

@@ -58,6 +58,10 @@ public class Network implements Serializable {
 		return _terminals;
 	}
 
+	public Terminal getTerminal(String key) {
+		return _terminals.get(key);
+	}
+
 	public void registerClient(String key, String name, int taxId) throws CommandException {
 		if (_clients.containsKey(key)) {
 			throw new DuplicateClientKeyException(key);
