@@ -16,6 +16,6 @@ class DoShowAllCommunications extends Command<Network> {
 
 	@Override
 	protected final void execute() throws CommandException {
-                //FIXME implement command
+		_receiver.getAllCommunications().forEach(System.out::println);
 	}
 }

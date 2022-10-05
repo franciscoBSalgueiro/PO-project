@@ -35,7 +35,7 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
         // FIXME define contructor(s)
         // FIXME define methods
 
-        public String get_key() {
+        public String getKey() {
                 return _key;
         }
 

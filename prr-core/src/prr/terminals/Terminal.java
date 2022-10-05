@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import prr.clients.Client;
+import prr.communications.Communication;
+import prr.communications.TextCommunication;
 
 // FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
 
@@ -16,6 +18,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         private String _key;
         private List<Terminal> _friends;
         private TerminalStatus _status;
+        private List<Communication> _communications;
 
         Terminal(String key, Client client) {
                 _key = key;
@@ -31,6 +34,14 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         // FIXME define contructor(s)
         // FIXME define methods
 
+        public String getKey() {
+                return _key;
+        }
+
+        public boolean isOn() {
+                return _status.isOn();
+        }
+
         /**
          * Checks if this terminal can end the current interactive communication.
          *
@@ -39,8 +50,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
          *         it was the originator of this communication.
          **/
         public boolean canEndCurrentCommunication() {
-                // FIXME add implementation code
-                return false;
+                return _status.canEndCurrentCommunication();
         }
 
         /**
@@ -49,8 +59,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
          * @return true if this terminal is neither off neither busy, false otherwise.
          **/
         public boolean canStartCommunication() {
-                // FIXME add implementation code
-                return true;
+                return _status.canStartCommunication();
         }
 
         /* FIXME add Javadoc */
@@ -80,9 +89,17 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 _status = new SilentStatus();
         }
 
+        public void sendTextCommunication(String message, Terminal destination) {
+                if (canStartCommunication()) {
+                        _status = new BusyStatus();
+                        Communication c = new TextCommunication(this, destination, message);
+                        _communications.add(c);
+                }
+        }
+
         @Override
         public String toString() {
                 // terminalType|terminalId|clientId|terminalStatus|balance-paid|balance-debts|friend1,...,friend
-                return _key + "|" + _client.get_key() + "|" + _status + "|";
+                return _key + "|" + _client.getKey() + "|" + _status + "|";
         }
 }

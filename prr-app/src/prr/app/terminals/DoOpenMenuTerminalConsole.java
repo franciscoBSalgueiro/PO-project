@@ -1,6 +1,8 @@
 package prr.app.terminals;
 
 import prr.Network;
+import prr.app.exceptions.UnknownTerminalKeyException;
+import prr.terminals.Terminal;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 //FIXME add mode import if needed
@@ -18,6 +20,10 @@ class DoOpenMenuTerminalConsole extends Command<Network> {
 	@Override
 	protected final void execute() throws CommandException {
 		String key = super.stringField("key");
-		(new prr.app.terminal.Menu(_receiver, _receiver.getTerminal(key))).open();
+		Terminal terminal = _receiver.getTerminal(key);
+		if (terminal == null) {
+			throw new UnknownTerminalKeyException(key);
+		}
+		(new prr.app.terminal.Menu(_receiver, terminal)).open();
 	}
 }

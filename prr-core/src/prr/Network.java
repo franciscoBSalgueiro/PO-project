@@ -2,11 +2,13 @@ package prr;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import prr.app.exceptions.DuplicateClientKeyException;
 import prr.app.exceptions.UnknownClientKeyException;
 import prr.clients.Client;
+import prr.communications.Communication;
 import prr.exceptions.UnrecognizedEntryException;
 import prr.terminals.BasicTerminal;
 import prr.terminals.FancyTerminal;
@@ -24,10 +26,12 @@ public class Network implements Serializable {
 
 	HashMap<String, Client> _clients;
 	HashMap<String, Terminal> _terminals;
+	ArrayList<Communication> _communications;
 
 	public Network() {
 		_clients = new HashMap<String, Client>();
 		_terminals = new HashMap<String,Terminal>();
+		_communications = new ArrayList<Communication>();
 	}
 
 	// FIXME define attributes
@@ -60,6 +64,10 @@ public class Network implements Serializable {
 
 	public Terminal getTerminal(String key) {
 		return _terminals.get(key);
+	}
+
+	public ArrayList<Communication> getAllCommunications() {
+		return _communications;
 	}
 
 	public void registerClient(String key, String name, int taxId) throws CommandException {
