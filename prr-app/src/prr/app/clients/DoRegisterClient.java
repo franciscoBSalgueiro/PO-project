@@ -12,17 +12,17 @@ class DoRegisterClient extends Command<Network> {
 
 	DoRegisterClient(Network receiver) {
 		super(Label.REGISTER_CLIENT, receiver);
-		super.addStringField("id", Prompt.key());
+		super.addStringField("key", Prompt.key());
 		super.addStringField("name", Prompt.name());
 		super.addIntegerField("taxId", Prompt.taxId());
 	}
 
 	@Override
 	protected final void execute() throws CommandException {
-		String id = super.stringField("id");
+		String key = super.stringField("key");
 		String name = super.stringField("name");
 		int taxId = super.integerField("taxId");
-		_receiver.registerClient(id, name, taxId);
+		_receiver.registerClient(key, name, taxId);
 	}
 
 }

@@ -2,12 +2,14 @@ package prr;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import prr.app.exceptions.DuplicateClientKeyException;
+import prr.app.exceptions.UnknownClientKeyException;
 import prr.clients.Client;
 import prr.exceptions.UnrecognizedEntryException;
+import prr.terminals.BasicTerminal;
+import prr.terminals.FancyTerminal;
 import prr.terminals.Terminal;
 import pt.tecnico.uilib.menus.CommandException;
 
@@ -21,11 +23,11 @@ public class Network implements Serializable {
 	private static final long serialVersionUID = 202208091753L;
 
 	HashMap<String, Client> _clients;
-	ArrayList<Terminal> _terminals;
+	HashMap<String, Terminal> _terminals;
 
 	public Network() {
 		_clients = new HashMap<String, Client>();
-		_terminals = new ArrayList<Terminal>();
+		_terminals = new HashMap<String,Terminal>();
 	}
 
 	// FIXME define attributes
@@ -48,18 +50,33 @@ public class Network implements Serializable {
 		return _clients;
 	}
 
-	public Client getClient(String id) {
-		return _clients.get(id);
+	public Client getClient(String key) {
+		return _clients.get(key);
 	}
 
-	public ArrayList<Terminal> getAllTerminals() {
+	public HashMap<String, Terminal> getAllTerminals() {
 		return _terminals;
 	}
 
-	public void registerClient(String id, String name, int taxId) throws CommandException {
-		if (_clients.containsKey(id)) {
-			throw new DuplicateClientKeyException(id);
+	public void registerClient(String key, String name, int taxId) throws CommandException {
+		if (_clients.containsKey(key)) {
+			throw new DuplicateClientKeyException(key);
 		}
-		_clients.put(id, new Client(id, name, taxId));
+		_clients.put(key, new Client(key, name, taxId));
+	}
+
+	public void registerTerminal(String key, String type, String clientKey) throws CommandException {
+		Terminal terminal;
+		Client client = _clients.get(clientKey);
+		if (client == null) {
+			throw new UnknownClientKeyException(clientKey);
+		}
+		if (type.equals("BASIC")) {
+			terminal = new BasicTerminal(key, client);
+		} else {
+			terminal = new FancyTerminal(key, client);
+		}
+		_terminals.put(key, terminal);
+		client.addTerminal(terminal);
 	}
 }

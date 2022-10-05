@@ -15,14 +15,14 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
         /** Serial number for serialization. */
         private static final long serialVersionUID = 202208091753L;
 
-        private String _id;
+        private String _key;
         private String _name;
         private int _taxId;
         private ClientType _type;
         private List<Terminal> _terminals;
 
-        public Client(String id, String name, int taxId) {
-                _id = id;
+        public Client(String key, String name, int taxId) {
+                _key = key;
                 _name = name;
                 _taxId = taxId;
                 _type = new NormalClient();
@@ -33,8 +33,16 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
         // FIXME define contructor(s)
         // FIXME define methods
 
+        public String get_key() {
+                return _key;
+        }
+
+        public void addTerminal(Terminal t) {
+                _terminals.add(t);
+        }
+
         @Override
         public String toString() {
-                return "CLIENT|" + _id + "|" + _name + "|" + _taxId + "|" + _type; // |notifications|terminals|payments|debts
+                return "CLIENT|" + _key + "|" + _name + "|" + _taxId + "|" + _type; // |notifications|terminals|payments|debts
         }
 }

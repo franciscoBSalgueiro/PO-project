@@ -12,14 +12,16 @@ import prr.clients.Client;
  * Abstract terminal.
  */
 abstract public class Terminal implements Serializable /* FIXME maybe addd more interfaces */ {
-        private Client client;
+        private Client _client;
         private String _key;
         private List<Terminal> _friends;
         private TerminalStatus _status;
 
-        Terminal(String key) {
+        Terminal(String key, Client client) {
                 _key = key;
                 _friends = new ArrayList<Terminal>();
+                _client = client;
+                _status = new IdleStatus();
         }
 
         /** Serial number for serialization. */
@@ -76,5 +78,11 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         /* FIXME add Javadoc */
         public void silence() {
                 _status = new SilentStatus();
+        }
+
+        @Override
+        public String toString() {
+                // terminalType|terminalId|clientId|terminalStatus|balance-paid|balance-debts|friend1,...,friend
+                return _key + "|" + _client.get_key() + "|" + _status + "|";
         }
 }

@@ -1,9 +1,15 @@
 package prr.terminals;
 
+import prr.clients.Client;
+
 public class FancyTerminal extends Terminal {
 
-    FancyTerminal(String key) {
-        super(key);
+    public FancyTerminal(String key, Client client) {
+        super(key, client);
     }
-    
+
+    @Override
+    public String toString() {
+        return "FANCY|" + super.toString();
+    }
 }
