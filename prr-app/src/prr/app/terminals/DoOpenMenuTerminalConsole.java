@@ -14,12 +14,12 @@ class DoOpenMenuTerminalConsole extends Command<Network> {
 
 	DoOpenMenuTerminalConsole(Network receiver) {
 		super(Label.OPEN_MENU_TERMINAL, receiver);
-		super.addStringField("key", Prompt.terminalKey());
+		addStringField("key", Prompt.terminalKey());
 	}
 
 	@Override
 	protected final void execute() throws CommandException {
-		String key = super.stringField("key");
+		String key = stringField("key");
 		Terminal terminal = _receiver.getTerminal(key);
 		if (terminal == null) {
 			throw new UnknownTerminalKeyException(key);

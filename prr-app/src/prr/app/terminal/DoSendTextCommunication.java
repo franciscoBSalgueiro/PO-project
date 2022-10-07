@@ -13,20 +13,20 @@ class DoSendTextCommunication extends TerminalCommand {
 
         DoSendTextCommunication(Network context, Terminal terminal) {
                 super(Label.SEND_TEXT_COMMUNICATION, context, terminal, receiver -> receiver.canStartCommunication());
-                super.addStringField("key", Prompt.terminalKey());
-                super.addStringField("message", Prompt.textMessage());
+                addStringField("key", Prompt.terminalKey());
+                addStringField("message", Prompt.textMessage());
         }
 
         @Override
         protected final void execute() throws CommandException {
-                String key = super.stringField("key");
-                String message = super.stringField("message");
+                String key = stringField("key");
+                String message = stringField("message");
                 Terminal destination = _network.getTerminal(key);
                 if (destination == null) {
                         throw new UnknownTerminalKeyException(key);
                 }
                 if (!destination.isOn()) {
-                        System.out.println(Message.destinationIsOff(key));
+                        _display.popup(Message.destinationIsOff(key));
                 }
                 _receiver.sendTextCommunication(message, destination);
         }

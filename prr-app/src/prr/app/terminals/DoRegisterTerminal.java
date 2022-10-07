@@ -13,16 +13,16 @@ class DoRegisterTerminal extends Command<Network> {
 
 	DoRegisterTerminal(Network receiver) {
 		super(Label.REGISTER_TERMINAL, receiver);
-		super.addStringField("key", Prompt.terminalKey());
-		super.addOptionField("type", Prompt.terminalType(), options);
-		super.addStringField("clientKey", Prompt.clientKey());
+		addStringField("key", Prompt.terminalKey());
+		addOptionField("type", Prompt.terminalType(), options);
+		addStringField("clientKey", Prompt.clientKey());
 	}
 
 	@Override
 	protected final void execute() throws CommandException {
-		String key = super.stringField("key");
-		String type = super.stringField("type");
-		String clientKey = super.stringField("clientKey");
+		String key = stringField("key");
+		String type = stringField("type");
+		String clientKey = stringField("clientKey");
 		_receiver.registerTerminal(key, type, clientKey);
 	}
 }

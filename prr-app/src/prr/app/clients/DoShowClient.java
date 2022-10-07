@@ -12,12 +12,12 @@ class DoShowClient extends Command<Network> {
 
 	DoShowClient(Network receiver) {
 		super(Label.SHOW_CLIENT, receiver);
-		super.addStringField("clientId", Prompt.key());
+		addStringField("clientId", Prompt.key());
 	}
 
 	@Override
 	protected final void execute() throws CommandException {
-		String clientId = super.stringField("clientId");
-		System.out.println(_receiver.getClient(clientId));
+		String clientId = stringField("clientId");
+		_display.popup(_receiver.getClient(clientId));
 	}
 }

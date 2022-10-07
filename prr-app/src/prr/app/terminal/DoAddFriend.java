@@ -12,12 +12,12 @@ class DoAddFriend extends TerminalCommand {
 
 	DoAddFriend(Network context, Terminal terminal) {
 		super(Label.ADD_FRIEND, context, terminal);
-		super.addStringField("key", Prompt.terminalKey());
+		addStringField("key", Prompt.terminalKey());
 	}
 
 	@Override
 	protected final void execute() throws CommandException {
-		String key = super.stringField("key");
+		String key = stringField("key");
 		Terminal friend = _network.getTerminal(key);
 		_receiver.addFriend(friend);
 	}

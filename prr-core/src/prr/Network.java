@@ -3,6 +3,8 @@ package prr;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 
 import prr.app.exceptions.DuplicateClientKeyException;
@@ -50,16 +52,16 @@ public class Network implements Serializable {
 		// FIXME implement method
 	}
 
-	public HashMap<String, Client> getAllClients() {
-		return _clients;
+	public Collection<Client> getAllClients() {
+		return Collections.unmodifiableCollection(_clients.values());
 	}
 
 	public Client getClient(String key) {
 		return _clients.get(key);
 	}
 
-	public HashMap<String, Terminal> getAllTerminals() {
-		return _terminals;
+	public Collection<Terminal> getAllTerminals() {
+		return Collections.unmodifiableCollection(_terminals.values());
 	}
 
 	public Terminal getTerminal(String key) {
