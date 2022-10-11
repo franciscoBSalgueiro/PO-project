@@ -86,7 +86,7 @@ public class NetworkManager {
 	public void saveAs(String filename) throws FileNotFoundException, MissingFileAssociationException, IOException {
 		_filename = filename;
 		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
-			out.writeObject(this);
+			out.writeObject(_network);
 		}
 	}
 

@@ -4,7 +4,7 @@ import prr.Network;
 import prr.app.exceptions.DuplicateTerminalKeyException;
 import prr.app.exceptions.UnknownClientKeyException;
 import prr.exceptions.DuplicateTerminalException;
-import prr.exceptions.UnkownClientException;
+import prr.exceptions.UnknownClientException;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 //FIXME add more imports if needed
@@ -28,8 +28,8 @@ class DoRegisterTerminal extends Command<Network> {
 		String type = stringField("type");
 		String clientKey = stringField("clientKey");
 		try {
-			_receiver.registerTerminal(key, type, clientKey);
-		} catch (UnkownClientException e) {
+			_receiver.registerTerminal(key, type, clientKey, "ON");
+		} catch (UnknownClientException e) {
 			throw new UnknownClientKeyException(clientKey);
 		} catch (DuplicateTerminalException e) {
 			throw new DuplicateTerminalKeyException(key);

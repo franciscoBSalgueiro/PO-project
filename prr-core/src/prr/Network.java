@@ -7,21 +7,24 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import prr.clients.Client;
 import prr.communications.Communication;
 import prr.exceptions.DuplicateClientException;
 import prr.exceptions.DuplicateTerminalException;
 import prr.exceptions.ImportFileException;
-import prr.exceptions.UnkownClientException;
+import prr.exceptions.UnknownClientException;
 import prr.exceptions.UnkownTerminalException;
 import prr.exceptions.UnrecognizedEntryException;
 import prr.terminals.BasicTerminal;
 import prr.terminals.FancyTerminal;
+import prr.terminals.IdleStatus;
+import prr.terminals.OffStatus;
 import prr.terminals.Terminal;
+import prr.terminals.TerminalStatus;
 
 // FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
 
@@ -32,8 +35,8 @@ public class Network implements Serializable {
 	/** Serial number for serialization. */
 	private static final long serialVersionUID = 202208091753L;
 
-	private Map<String, Client> _clients = new HashMap<>();
-	private Map<String, Terminal> _terminals = new HashMap<>();
+	private Map<String, Client> _clients = new TreeMap<>();
+	private Map<String, Terminal> _terminals = new TreeMap<>();
 	private List<Communication> _communications = new ArrayList<>();
 
 	// FIXME define attributes
@@ -56,7 +59,7 @@ public class Network implements Serializable {
 				try {
 					registerEntry(fields);
 				} catch (DuplicateClientException | UnkownTerminalException | DuplicateTerminalException
-						| UnkownClientException | UnrecognizedEntryException e) {
+						| UnknownClientException | UnrecognizedEntryException e) {
 					// DAVID should not happen
 					e.printStackTrace();
 				}
@@ -67,10 +70,10 @@ public class Network implements Serializable {
 	}
 
 	public void registerEntry(String... fields) throws DuplicateClientException, UnkownTerminalException,
-			DuplicateTerminalException, UnkownClientException, UnrecognizedEntryException {
+			DuplicateTerminalException, UnknownClientException, UnrecognizedEntryException {
 		switch (fields[0]) {
 			case "CLIENT" -> registerClient(fields[1], fields[2], Integer.parseInt(fields[3]));
-			case "BASIC", "FANCY" -> registerTerminal(fields[1], fields[0], fields[2]);
+			case "BASIC", "FANCY" -> registerTerminal(fields[1], fields[0], fields[2], fields[3]);
 			case "FRIENDS" -> registerFriends(fields);
 			default -> throw new UnrecognizedEntryException(fields[0]);
 		}
@@ -94,8 +97,12 @@ public class Network implements Serializable {
 		return Collections.unmodifiableCollection(_clients.values());
 	}
 
-	public Client getClient(String key) {
-		return _clients.get(key);
+	public Client getClient(String key) throws UnknownClientException {
+		Client client = _clients.get(key);
+		if (client == null) {
+			throw new UnknownClientException(key);
+		}
+		return client;
 	}
 
 	public Collection<Terminal> getAllTerminals() {
@@ -132,20 +139,27 @@ public class Network implements Serializable {
 	}
 
 	// FIXME replace exception and catch it
-	public void registerTerminal(String key, String type, String clientKey)
-			throws UnkownClientException, DuplicateTerminalException {
+	public void registerTerminal(String key, String type, String clientKey, String status)
+			throws UnknownClientException, DuplicateTerminalException {
 		Terminal terminal;
+		TerminalStatus terminalStatus;
 		Client client = _clients.get(clientKey);
 		if (client == null) {
-			throw new UnkownClientException(clientKey);
+			throw new UnknownClientException(clientKey);
 		}
 		if (_terminals.containsKey(key)) {
 			throw new DuplicateTerminalException(key);
 		}
+		if (status.equals("ON")) {
+            terminalStatus = new IdleStatus();
+        } else  {
+		//  if (status.equals("OFF")) {
+            terminalStatus = new OffStatus();
+        }
 		if (type.equals("BASIC")) {
-			terminal = new BasicTerminal(key, client);
+			terminal = new BasicTerminal(key, client, terminalStatus);
 		} else {
-			terminal = new FancyTerminal(key, client);
+			terminal = new FancyTerminal(key, client, terminalStatus);
 		}
 		_terminals.put(key, terminal);
 		client.addTerminal(terminal);

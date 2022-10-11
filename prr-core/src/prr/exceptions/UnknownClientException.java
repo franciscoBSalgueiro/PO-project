@@ -1,6 +1,6 @@
 package prr.exceptions;
 
-public class UnkownClientException extends Exception {
+public class UnknownClientException extends Exception {
     /** Class serial number. */
 	private static final long serialVersionUID = 201109020943L;
 
@@ -8,7 +8,7 @@ public class UnkownClientException extends Exception {
 	private final String _key;
 
 	/** @param key */
-	public UnkownClientException(String key) {
+	public UnknownClientException(String key) {
 		_key = key;
 	}
 

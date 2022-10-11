@@ -16,22 +16,22 @@ import prr.communications.TextCommunication;
  * Abstract terminal.
  */
 abstract public class Terminal implements Serializable /* FIXME maybe addd more interfaces */ {
+        /** Serial number for serialization. */
+        private static final long serialVersionUID = 202208091753L;
+
         private Client _client;
         private String _key;
         private List<Terminal> _friends;
         private TerminalStatus _status;
         private List<Communication> _communications;
 
-        Terminal(String key, Client client) {
+        Terminal(String key, Client client, TerminalStatus status) {
                 _key = key;
                 _friends = new ArrayList<Terminal>();
                 _client = client;
-                _status = new IdleStatus();
+                _status = status;
                 _communications = new ArrayList<Communication>();
         }
-
-        /** Serial number for serialization. */
-        private static final long serialVersionUID = 202208091753L;
 
         // FIXME define attributes
         // FIXME define contructor(s)
