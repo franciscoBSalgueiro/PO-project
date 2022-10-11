@@ -2,6 +2,8 @@ package prr.terminals;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import prr.clients.Client;
@@ -25,6 +27,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 _friends = new ArrayList<Terminal>();
                 _client = client;
                 _status = new IdleStatus();
+                _communications = new ArrayList<Communication>();
         }
 
         /** Serial number for serialization. */
@@ -40,6 +43,10 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
 
         public boolean isOn() {
                 return _status.isOn();
+        }
+
+        public Collection<Communication> getCommunications() {
+                return Collections.unmodifiableCollection(_communications);
         }
 
         /**
@@ -100,6 +107,6 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         @Override
         public String toString() {
                 // terminalType|terminalId|clientId|terminalStatus|balance-paid|balance-debts|friend1,...,friend
-                return _key + "|" + _client.getKey() + "|" + _status + "|";
+                return _key + "|" + _client.getKey() + "|" + _status + "|" + "0" + "|" + "0";
         }
 }

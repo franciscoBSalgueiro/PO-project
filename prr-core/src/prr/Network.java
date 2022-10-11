@@ -1,21 +1,27 @@
 package prr;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import prr.app.exceptions.DuplicateClientKeyException;
-import prr.app.exceptions.UnknownClientKeyException;
 import prr.clients.Client;
 import prr.communications.Communication;
+import prr.exceptions.DuplicateClientException;
+import prr.exceptions.DuplicateTerminalException;
+import prr.exceptions.ImportFileException;
+import prr.exceptions.UnkownClientException;
+import prr.exceptions.UnkownTerminalException;
 import prr.exceptions.UnrecognizedEntryException;
 import prr.terminals.BasicTerminal;
 import prr.terminals.FancyTerminal;
 import prr.terminals.Terminal;
-import pt.tecnico.uilib.menus.CommandException;
 
 // FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
 
@@ -26,15 +32,9 @@ public class Network implements Serializable {
 	/** Serial number for serialization. */
 	private static final long serialVersionUID = 202208091753L;
 
-	HashMap<String, Client> _clients;
-	HashMap<String, Terminal> _terminals;
-	ArrayList<Communication> _communications;
-
-	public Network() {
-		_clients = new HashMap<String, Client>();
-		_terminals = new HashMap<String,Terminal>();
-		_communications = new ArrayList<Communication>();
-	}
+	private Map<String, Client> _clients = new HashMap<>();
+	private Map<String, Terminal> _terminals = new HashMap<>();
+	private List<Communication> _communications = new ArrayList<>();
 
 	// FIXME define attributes
 	// FIXME define contructor(s)
@@ -48,8 +48,46 @@ public class Network implements Serializable {
 	 * @throws IOException                if there is an IO erro while processing
 	 *                                    the text file
 	 */
-	void importFile(String filename) throws UnrecognizedEntryException, IOException /* FIXME maybe other exceptions */ {
-		// FIXME implement method
+	void importFile(String filename) throws UnrecognizedEntryException, IOException, ImportFileException {
+		try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				String[] fields = line.split("\\|");
+				try {
+					registerEntry(fields);
+				} catch (DuplicateClientException | UnkownTerminalException | DuplicateTerminalException
+						| UnkownClientException | UnrecognizedEntryException e) {
+					// DAVID should not happen
+					e.printStackTrace();
+				}
+			}
+		} catch (IOException e1) {
+			throw new ImportFileException(filename);
+		}
+	}
+
+	public void registerEntry(String... fields) throws DuplicateClientException, UnkownTerminalException,
+			DuplicateTerminalException, UnkownClientException, UnrecognizedEntryException {
+		switch (fields[0]) {
+			case "CLIENT" -> registerClient(fields[1], fields[2], Integer.parseInt(fields[3]));
+			case "BASIC", "FANCY" -> registerTerminal(fields[1], fields[0], fields[2]);
+			case "FRIENDS" -> registerFriends(fields);
+			default -> throw new UnrecognizedEntryException(fields[0]);
+		}
+	}
+
+	public void registerFriends(String... fields) throws UnkownTerminalException {
+		Terminal terminal = _terminals.get(fields[1]);
+		if (terminal == null) {
+			throw new UnkownTerminalException(fields[1]);
+		}
+		for (int i = 2; i < fields.length; i++) {
+			Terminal friend = _terminals.get(fields[i]);
+			if (friend == null) {
+				throw new UnkownTerminalException(fields[i]);
+			}
+			terminal.addFriend(friend);
+		}
 	}
 
 	public Collection<Client> getAllClients() {
@@ -64,26 +102,45 @@ public class Network implements Serializable {
 		return Collections.unmodifiableCollection(_terminals.values());
 	}
 
+	public Collection<Terminal> getUnusedTerminals() {
+		Collection<Terminal> unused = new ArrayList<>();
+		for (Terminal terminal : _terminals.values()) {
+			if (terminal.getCommunications().size() == 0) {
+				unused.add(terminal);
+			}
+		}
+		return unused;
+	}
+
 	public Terminal getTerminal(String key) {
 		return _terminals.get(key);
 	}
 
-	public ArrayList<Communication> getAllCommunications() {
+	public Collection<Communication> getAllCommunications() {
 		return _communications;
 	}
 
-	public void registerClient(String key, String name, int taxId) throws CommandException {
+	public Communication getCommunication(int id) {
+		return _communications.get(id);
+	}
+
+	public void registerClient(String key, String name, int taxId) throws DuplicateClientException {
 		if (_clients.containsKey(key)) {
-			throw new DuplicateClientKeyException(key);
+			throw new DuplicateClientException(key);
 		}
 		_clients.put(key, new Client(key, name, taxId));
 	}
 
-	public void registerTerminal(String key, String type, String clientKey) throws CommandException {
+	// FIXME replace exception and catch it
+	public void registerTerminal(String key, String type, String clientKey)
+			throws UnkownClientException, DuplicateTerminalException {
 		Terminal terminal;
 		Client client = _clients.get(clientKey);
 		if (client == null) {
-			throw new UnknownClientKeyException(clientKey);
+			throw new UnkownClientException(clientKey);
+		}
+		if (_terminals.containsKey(key)) {
+			throw new DuplicateTerminalException(key);
 		}
 		if (type.equals("BASIC")) {
 			terminal = new BasicTerminal(key, client);

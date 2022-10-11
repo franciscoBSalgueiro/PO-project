@@ -1,6 +1,8 @@
 package prr.app.clients;
 
 import prr.Network;
+import prr.app.exceptions.DuplicateClientKeyException;
+import prr.exceptions.DuplicateClientException;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 //FIXME add more imports if needed
@@ -22,7 +24,11 @@ class DoRegisterClient extends Command<Network> {
 		String key = stringField("key");
 		String name = stringField("name");
 		int taxId = integerField("taxId");
-		_receiver.registerClient(key, name, taxId);
+		try {
+			_receiver.registerClient(key, name, taxId);
+		} catch (DuplicateClientException e) {
+			throw new DuplicateClientKeyException(e.getKey());
+		}
 	}
 
 }

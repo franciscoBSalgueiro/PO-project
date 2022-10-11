@@ -1,7 +1,11 @@
 package prr;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import prr.exceptions.ImportFileException;
 import prr.exceptions.MissingFileAssociationException;
@@ -18,10 +22,15 @@ public class NetworkManager {
 
 	/** The network itself. */
 	private Network _network = new Network();
+	private String _filename;
 	// FIXME addmore fields if needed
 
 	public Network getNetwork() {
 		return _network;
+	}
+
+	public String getFilename() {
+		return _filename;
 	}
 
 	/**
@@ -33,7 +42,15 @@ public class NetworkManager {
 	 *                                  an error while processing this file.
 	 */
 	public void load(String filename) throws UnavailableFileException {
-		// FIXME implement serialization method
+		try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
+			_network = (Network) in.readObject();
+		} catch (FileNotFoundException e) {
+			throw new UnavailableFileException(filename);
+		} catch (IOException e) {
+			throw new UnavailableFileException(filename);
+		} catch (ClassNotFoundException e) {
+			throw new UnavailableFileException(filename);
+		}
 	}
 
 	/**
@@ -49,7 +66,7 @@ public class NetworkManager {
 	 *                                         to disk.
 	 */
 	public void save() throws FileNotFoundException, MissingFileAssociationException, IOException {
-		// FIXME implement serialization method
+		saveAs(_filename);
 	}
 
 	/**
@@ -67,7 +84,10 @@ public class NetworkManager {
 	 *                                         to disk.
 	 */
 	public void saveAs(String filename) throws FileNotFoundException, MissingFileAssociationException, IOException {
-		// FIXME implement serialization method
+		_filename = filename;
+		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
+			out.writeObject(this);
+		}
 	}
 
 	/**

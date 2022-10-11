@@ -4,3 +4,4 @@ CVS/
 *.jar
 bin/
 .settings/
+prr-tests-ei-daily/
