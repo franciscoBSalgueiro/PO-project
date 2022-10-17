@@ -73,7 +73,7 @@ public class Network implements Serializable {
 			DuplicateTerminalException, UnknownClientException, UnrecognizedEntryException {
 		switch (fields[0]) {
 			case "CLIENT" -> registerClient(fields[1], fields[2], Integer.parseInt(fields[3]));
-			case "BASIC", "FANCY" -> registerTerminal(fields[1], fields[0], fields[2]);
+			case "BASIC", "FANCY" -> registerTerminal(fields[1], fields[0], fields[2], fields[3]);
 			case "FRIENDS" -> registerFriends(fields);
 			default -> throw new UnrecognizedEntryException(fields[0]);
 		}
@@ -140,7 +140,7 @@ public class Network implements Serializable {
 
 	// FIXME replace exception and catch it
 	// acho q n pode ser criado com estado != de idle
-	public void registerTerminal(String key, String type, String clientKey)
+	public void registerTerminal(String key, String type, String clientKey, String status)
 			throws UnknownClientException, DuplicateTerminalException {
 		Terminal terminal;
 		Client client = _clients.get(clientKey);
@@ -150,16 +150,13 @@ public class Network implements Serializable {
 		if (_terminals.containsKey(key)) {
 			throw new DuplicateTerminalException(key);
 		}
-//		if (status.equals("ON")) {
-//          terminal.turnOn();
-//      } else  {
-		//  if (status.equals("OFF")) {
-//          terminal.turnOff();
-//      }
 		if (type.equals("BASIC")) {
 			terminal = new BasicTerminal(key, client);
 		} else {
 			terminal = new FancyTerminal(key, client);
+		}
+		if (status.equals("OFF")) {
+		   terminal.turnOff();
 		}
 		_terminals.put(key, terminal);
 		client.addTerminal(terminal);
