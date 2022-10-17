@@ -1,5 +1,7 @@
 package prr;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -42,7 +44,7 @@ public class NetworkManager {
 	 *                                  an error while processing this file.
 	 */
 	public void load(String filename) throws UnavailableFileException {
-		try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
+		try (ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)))) {
 			_network = (Network) in.readObject();
 		} catch (FileNotFoundException e) {
 			throw new UnavailableFileException(filename);
@@ -85,7 +87,7 @@ public class NetworkManager {
 	 */
 	public void saveAs(String filename) throws FileNotFoundException, MissingFileAssociationException, IOException {
 		_filename = filename;
-		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
+		try (ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filename)))) {
 			out.writeObject(_network);
 		}
 	}

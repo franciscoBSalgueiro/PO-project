@@ -139,7 +139,6 @@ public class Network implements Serializable {
 	}
 
 	// FIXME replace exception and catch it
-	// acho q n pode ser criado com estado != de idle
 	public void registerTerminal(String key, String type, String clientKey, String status)
 			throws UnknownClientException, DuplicateTerminalException {
 		Terminal terminal;

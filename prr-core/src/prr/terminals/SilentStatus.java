@@ -15,17 +15,17 @@ public class SilentStatus extends TerminalStatus {
 
     @Override
     public void turnOn() {
-        _terminal.setStatus(new IdleStatus(_terminal));
+        getTerminal().setStatus(new IdleStatus(getTerminal()));
     }
 
     @Override
     public void turnOff() {
-        _terminal.setStatus(new OffStatus(_terminal));
+        getTerminal().setStatus(new OffStatus(getTerminal()));
     }
 
     @Override
     public void busy() {
-        _terminal.setStatus(new BusyStatus(_terminal));
+        getTerminal().setStatus(new BusyStatus(getTerminal()));
     }
 
     @Override

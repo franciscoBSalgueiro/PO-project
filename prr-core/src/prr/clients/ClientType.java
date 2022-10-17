@@ -9,6 +9,8 @@ public abstract class ClientType implements Serializable {
 
     public ClientType(Client c) { _client=c; }
 
+    public Client getClient() { return _client; }
+
     @Override
     abstract public String toString();
 }

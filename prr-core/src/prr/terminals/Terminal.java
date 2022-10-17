@@ -35,6 +35,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 _communications = new TreeMap<Integer, Communication>();
         }
 
+        //pretty sure que podemos apagar este construtor
         Terminal(String key, Client client, TerminalStatus status) {
                 _key = key;
                 _friends = new ArrayList<Terminal>();
@@ -109,8 +110,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         }
 
         public void sendTextCommunication(String message, Terminal destination) {
-                if (canStartCommunication()) {
-                        _status.busy();
+                if (canStartCommunication() && isOn()) {
                         Communication c = new TextCommunication(this, destination, message);
                         _communications.put(c.getKey(), c);
                 }

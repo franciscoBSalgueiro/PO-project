@@ -20,12 +20,12 @@ public class OffStatus extends TerminalStatus {
 
     @Override
     public void turnOn() {
-        _terminal.setStatus(new IdleStatus(_terminal));
+        getTerminal().setStatus(new IdleStatus(getTerminal()));
     }
 
     @Override
     public void silence() {
-        _terminal.setStatus(new SilentStatus(_terminal));
+        getTerminal().setStatus(new SilentStatus(getTerminal()));
     }
 
     @Override
