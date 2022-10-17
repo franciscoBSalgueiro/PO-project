@@ -4,4 +4,11 @@
         "prr-core/src",
         "prr-app/src"
     ],
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-17",
+            "path": "/usr/lib/jvm/java-17-openjdk-17.0.4.1.1-1.fc35.x86_64",
+            "default": true,
+        }
+    ]
 }

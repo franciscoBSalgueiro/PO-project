@@ -1,6 +1,6 @@
 package prr.exceptions;
 
-public class UnkownTerminalException extends Exception {
+public class UnknownTerminalException extends Exception {
     /** Class serial number. */
 	private static final long serialVersionUID = 201109020943L;
 
@@ -8,7 +8,7 @@ public class UnkownTerminalException extends Exception {
 	private final String _key;
 
 	/** @param key */
-	public UnkownTerminalException(String key) {
+	public UnknownTerminalException(String key) {
 		_key = key;
 	}
 

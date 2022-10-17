@@ -13,7 +13,7 @@ abstract public class Communication implements Serializable /* FIXME maybe addd 
     /** Serial number for serialization. */
     private static final long serialVersionUID = 202208091753L;
 
-    private static int _key = 0;
+    private static int _key = 0; //why is this attribute static?
     private Terminal _origin;
     private Terminal _destination;
 
@@ -26,6 +26,8 @@ abstract public class Communication implements Serializable /* FIXME maybe addd 
     // FIXME define attributes
     // FIXME define contructor(s)
     // FIXME define methods
+
+    public int getKey() { return _key; }
 
     public Terminal getOrigin() {
         return _origin;

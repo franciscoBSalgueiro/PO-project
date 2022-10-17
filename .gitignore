@@ -5,3 +5,4 @@ CVS/
 bin/
 .settings/
 prr-tests-ei-daily/
+.vscode/

@@ -6,16 +6,25 @@ import java.io.Serializable;
  * Abstract terminal status. Possible status are Idle or Off.
  */
 public abstract class TerminalStatus implements Serializable {
-    /** Serial number for serialization. */
-    private static final long serialVersionUID = 202208091753L;
+	/** Serial number for serialization. */
+	private static final long serialVersionUID = 202208091753L;
+	
+	public Terminal _terminal; //public por agora
 
-    abstract public boolean canEndCurrentCommunication();
-    abstract public boolean canStartCommunication();
+	public TerminalStatus(Terminal terminal) { _terminal = terminal; }
 
-    public boolean isOn() {
-        return true;
-    }
+	abstract public boolean canEndCurrentCommunication();
+	abstract public boolean canStartCommunication();
 
-    @Override
-    abstract public String toString();
+	public void turnOff() {}
+	public void turnOn() {}
+	public void silence() {}
+	public void busy() {}
+
+	public boolean isOn() {
+		return true;
+	}
+
+	@Override
+	abstract public String toString();
 }

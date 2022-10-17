@@ -28,7 +28,7 @@ class DoRegisterTerminal extends Command<Network> {
 		String type = stringField("type");
 		String clientKey = stringField("clientKey");
 		try {
-			_receiver.registerTerminal(key, type, clientKey, "ON");
+			_receiver.registerTerminal(key, type, clientKey);
 		} catch (UnknownClientException e) {
 			throw new UnknownClientKeyException(clientKey);
 		} catch (DuplicateTerminalException e) {

@@ -26,7 +26,7 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
                 _key = key;
                 _name = name;
                 _taxId = taxId;
-                _type = new NormalClient();
+                _type = new NormalClient(this);
                 _terminals = new ArrayList<Terminal>();
                 activeNotifications = true;
         }
@@ -37,6 +37,10 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
 
         public String getKey() {
                 return _key;
+        }
+
+        public void setClientType(ClientType type) {
+                _type = type;
         }
 
         public void addTerminal(Terminal t) {

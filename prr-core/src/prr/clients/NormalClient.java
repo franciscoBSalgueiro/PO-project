@@ -1,8 +1,10 @@
 package prr.clients;
 
 public class NormalClient extends ClientType {
-    @Override
-    public String toString() {
-        return "NORMAL";
-    }
+	public NormalClient(Client c) { super(c); }
+ 
+	@Override
+	public String toString() {
+		return "NORMAL";
+	}
 }

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import prr.clients.Client;
 import prr.communications.Communication;
@@ -23,14 +25,22 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         private String _key;
         private List<Terminal> _friends;
         private TerminalStatus _status;
-        private List<Communication> _communications;
+        private Map<Integer, Communication> _communications;
+
+        Terminal(String key, Client client) {
+                _key = key;
+                _friends = new ArrayList<Terminal>();
+                _client = client;
+                _status = new IdleStatus(this);
+                _communications = new TreeMap<Integer, Communication>();
+        }
 
         Terminal(String key, Client client, TerminalStatus status) {
                 _key = key;
                 _friends = new ArrayList<Terminal>();
                 _client = client;
                 _status = status;
-                _communications = new ArrayList<Communication>();
+                _communications = new TreeMap<Integer, Communication>();
         }
 
         // FIXME define attributes
@@ -46,7 +56,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         }
 
         public Collection<Communication> getCommunications() {
-                return Collections.unmodifiableCollection(_communications);
+                return Collections.unmodifiableCollection(_communications.values()); //n tenho certeza se isto faz o q devia
         }
 
         /**
@@ -81,26 +91,28 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 t.removeFriend(t);
         }
 
+        public void setStatus(TerminalStatus status) { _status = status; }
+
         /* FIXME add Javadoc */
         public void turnOff() {
-                _status = new OffStatus();
+                _status.turnOff();
         }
 
         /* FIXME add Javadoc */
         public void turnOn() {
-                _status = new IdleStatus();
+                _status.turnOn();
         }
 
         /* FIXME add Javadoc */
         public void silence() {
-                _status = new SilentStatus();
+                _status.silence();
         }
 
         public void sendTextCommunication(String message, Terminal destination) {
                 if (canStartCommunication()) {
-                        _status = new BusyStatus();
+                        _status.busy();
                         Communication c = new TextCommunication(this, destination, message);
-                        _communications.add(c);
+                        _communications.put(c.getKey(), c);
                 }
         }
 

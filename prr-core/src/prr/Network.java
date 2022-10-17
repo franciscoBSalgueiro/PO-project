@@ -17,7 +17,7 @@ import prr.exceptions.DuplicateClientException;
 import prr.exceptions.DuplicateTerminalException;
 import prr.exceptions.ImportFileException;
 import prr.exceptions.UnknownClientException;
-import prr.exceptions.UnkownTerminalException;
+import prr.exceptions.UnknownTerminalException;
 import prr.exceptions.UnrecognizedEntryException;
 import prr.terminals.BasicTerminal;
 import prr.terminals.FancyTerminal;
@@ -58,7 +58,7 @@ public class Network implements Serializable {
 				String[] fields = line.split("\\|");
 				try {
 					registerEntry(fields);
-				} catch (DuplicateClientException | UnkownTerminalException | DuplicateTerminalException
+				} catch (DuplicateClientException | UnknownTerminalException | DuplicateTerminalException
 						| UnknownClientException | UnrecognizedEntryException e) {
 					// DAVID should not happen
 					e.printStackTrace();
@@ -69,25 +69,25 @@ public class Network implements Serializable {
 		}
 	}
 
-	public void registerEntry(String... fields) throws DuplicateClientException, UnkownTerminalException,
+	public void registerEntry(String... fields) throws DuplicateClientException, UnknownTerminalException,
 			DuplicateTerminalException, UnknownClientException, UnrecognizedEntryException {
 		switch (fields[0]) {
 			case "CLIENT" -> registerClient(fields[1], fields[2], Integer.parseInt(fields[3]));
-			case "BASIC", "FANCY" -> registerTerminal(fields[1], fields[0], fields[2], fields[3]);
+			case "BASIC", "FANCY" -> registerTerminal(fields[1], fields[0], fields[2]);
 			case "FRIENDS" -> registerFriends(fields);
 			default -> throw new UnrecognizedEntryException(fields[0]);
 		}
 	}
 
-	public void registerFriends(String... fields) throws UnkownTerminalException {
+	public void registerFriends(String... fields) throws UnknownTerminalException {
 		Terminal terminal = _terminals.get(fields[1]);
 		if (terminal == null) {
-			throw new UnkownTerminalException(fields[1]);
+			throw new UnknownTerminalException(fields[1]);
 		}
 		for (int i = 2; i < fields.length; i++) {
 			Terminal friend = _terminals.get(fields[i]);
 			if (friend == null) {
-				throw new UnkownTerminalException(fields[i]);
+				throw new UnknownTerminalException(fields[i]);
 			}
 			terminal.addFriend(friend);
 		}
@@ -139,10 +139,10 @@ public class Network implements Serializable {
 	}
 
 	// FIXME replace exception and catch it
-	public void registerTerminal(String key, String type, String clientKey, String status)
+	// acho q n pode ser criado com estado != de idle
+	public void registerTerminal(String key, String type, String clientKey)
 			throws UnknownClientException, DuplicateTerminalException {
 		Terminal terminal;
-		TerminalStatus terminalStatus;
 		Client client = _clients.get(clientKey);
 		if (client == null) {
 			throw new UnknownClientException(clientKey);
@@ -150,16 +150,16 @@ public class Network implements Serializable {
 		if (_terminals.containsKey(key)) {
 			throw new DuplicateTerminalException(key);
 		}
-		if (status.equals("ON")) {
-            terminalStatus = new IdleStatus();
-        } else  {
+//		if (status.equals("ON")) {
+//          terminal.turnOn();
+//      } else  {
 		//  if (status.equals("OFF")) {
-            terminalStatus = new OffStatus();
-        }
+//          terminal.turnOff();
+//      }
 		if (type.equals("BASIC")) {
-			terminal = new BasicTerminal(key, client, terminalStatus);
+			terminal = new BasicTerminal(key, client);
 		} else {
-			terminal = new FancyTerminal(key, client, terminalStatus);
+			terminal = new FancyTerminal(key, client);
 		}
 		_terminals.put(key, terminal);
 		client.addTerminal(terminal);
