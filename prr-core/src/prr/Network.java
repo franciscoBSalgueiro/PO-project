@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -21,10 +20,7 @@ import prr.exceptions.UnknownTerminalException;
 import prr.exceptions.UnrecognizedEntryException;
 import prr.terminals.BasicTerminal;
 import prr.terminals.FancyTerminal;
-import prr.terminals.IdleStatus;
-import prr.terminals.OffStatus;
 import prr.terminals.Terminal;
-import prr.terminals.TerminalStatus;
 
 // FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
 
@@ -37,7 +33,12 @@ public class Network implements Serializable {
 
 	private Map<String, Client> _clients = new TreeMap<>();
 	private Map<String, Terminal> _terminals = new TreeMap<>();
-	private List<Communication> _communications = new ArrayList<>();
+	private Map<Integer, Communication> _communications = new TreeMap<>();
+	private int _uuid = 0;
+
+	private int getUUID() {
+		return ++_uuid;
+	}
 
 	// FIXME define attributes
 	// FIXME define contructor(s)
@@ -70,7 +71,7 @@ public class Network implements Serializable {
 	}
 
 	public void registerEntry(String... fields) throws DuplicateClientException, UnknownTerminalException,
-			DuplicateTerminalException, UnknownClientException, UnrecognizedEntryException {
+			DuplicateTerminalException, UnrecognizedEntryException, UnknownClientException {
 		switch (fields[0]) {
 			case "CLIENT" -> registerClient(fields[1], fields[2], Integer.parseInt(fields[3]));
 			case "BASIC", "FANCY" -> registerTerminal(fields[1], fields[0], fields[2], fields[3]);
@@ -124,7 +125,7 @@ public class Network implements Serializable {
 	}
 
 	public Collection<Communication> getAllCommunications() {
-		return _communications;
+		return Collections.unmodifiableCollection(_communications.values());
 	}
 
 	public Communication getCommunication(int id) {
@@ -155,7 +156,7 @@ public class Network implements Serializable {
 			terminal = new FancyTerminal(key, client);
 		}
 		if (status.equals("OFF")) {
-		   terminal.turnOff();
+			terminal.turnOff();
 		}
 		_terminals.put(key, terminal);
 		client.addTerminal(terminal);
