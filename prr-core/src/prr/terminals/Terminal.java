@@ -83,7 +83,6 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         /* FIXME add Javadoc */
         public void addFriend(Terminal t) {
                 _friends.add(t);
-                t.addFriend(t);
         }
 
         /* FIXME add Javadoc */
