@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import prr.NetworkManager;
 import prr.exceptions.MissingFileAssociationException;
+import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.Command;
 //FIXME add more imports if needed
 
@@ -15,13 +16,14 @@ class DoSaveFile extends Command<NetworkManager> {
 
 	DoSaveFile(NetworkManager receiver) {
 		super(Label.SAVE_FILE, receiver);
-		if (_receiver.getFilename() == null)
-			addStringField("filename", Prompt.newSaveAs());
 	}
 
 	@Override
 	protected final void execute() {
-		String filename = stringField("filename");
+		String filename = _receiver.getFilename();
+		if (filename == null) {
+			filename = Form.requestString(Prompt.newSaveAs());
+		}
 		try {
 			_receiver.saveAs(filename);
 		} catch (FileNotFoundException e) {
