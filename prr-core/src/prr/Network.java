@@ -15,8 +15,10 @@ import prr.communications.Communication;
 import prr.exceptions.DuplicateClientException;
 import prr.exceptions.DuplicateTerminalException;
 import prr.exceptions.ImportFileException;
+import prr.exceptions.InvalidTerminalException;
 import prr.exceptions.UnknownClientException;
 import prr.exceptions.UnknownTerminalException;
+import prr.exceptions.UnknownTerminalTypeException;
 import prr.exceptions.UnrecognizedEntryException;
 import prr.terminals.BasicTerminal;
 import prr.terminals.FancyTerminal;
@@ -60,8 +62,8 @@ public class Network implements Serializable {
 				try {
 					registerEntry(fields);
 				} catch (DuplicateClientException | UnknownTerminalException | DuplicateTerminalException
-						| UnknownClientException | UnrecognizedEntryException e) {
-					// DAVID should not happen
+						| UnknownClientException | UnrecognizedEntryException | InvalidTerminalException | UnknownTerminalTypeException e) {
+					// never happens
 					e.printStackTrace();
 				}
 			}
@@ -71,7 +73,7 @@ public class Network implements Serializable {
 	}
 
 	public void registerEntry(String... fields) throws DuplicateClientException, UnknownTerminalException,
-			DuplicateTerminalException, UnrecognizedEntryException, UnknownClientException {
+			DuplicateTerminalException, UnrecognizedEntryException, UnknownClientException, InvalidTerminalException, UnknownTerminalTypeException {
 		switch (fields[0]) {
 			case "CLIENT" -> registerClient(fields[1], fields[2], Integer.parseInt(fields[3]));
 			case "BASIC", "FANCY" -> registerTerminal(fields[1], fields[0], fields[2], fields[3]);
@@ -141,9 +143,12 @@ public class Network implements Serializable {
 
 	// FIXME replace exception and catch it
 	public void registerTerminal(String key, String type, String clientKey, String status)
-			throws UnknownClientException, DuplicateTerminalException {
+			throws UnknownClientException, DuplicateTerminalException, InvalidTerminalException, UnknownTerminalTypeException {
 		Terminal terminal;
 		Client client = _clients.get(clientKey);
+		if (key.length() != 6 || !key.matches("\\d+")) {
+			throw new InvalidTerminalException(key);
+		}
 		if (client == null) {
 			throw new UnknownClientException(clientKey);
 		}
@@ -152,8 +157,10 @@ public class Network implements Serializable {
 		}
 		if (type.equals("BASIC")) {
 			terminal = new BasicTerminal(key, client);
-		} else {
+		} else if (type.equals("FANCY")) {
 			terminal = new FancyTerminal(key, client);
+		} else {
+			throw new UnknownTerminalTypeException(type);
 		}
 		if (status.equals("OFF")) {
 			terminal.turnOff();
