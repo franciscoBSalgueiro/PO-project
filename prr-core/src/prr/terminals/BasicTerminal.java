@@ -7,10 +7,6 @@ public class BasicTerminal extends Terminal {
         super(key, client);
     }
 
-    public BasicTerminal(String key, Client client, TerminalStatus status) {
-        super(key, client, status);
-    }
-
     @Override
     public String toString() {
         return "BASIC|" + super.toString();

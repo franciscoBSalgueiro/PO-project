@@ -162,8 +162,11 @@ public class Network implements Serializable {
 		} else {
 			throw new UnknownTerminalTypeException(type);
 		}
-		if (status.equals("OFF")) {
-			terminal.turnOff();
+		switch (status) {
+			case "ON" -> terminal.turnOn();
+			case "OFF" -> terminal.turnOff();
+			case "SILENCE" -> terminal.silence();
+			default -> throw new InvalidTerminalException(key);
 		}
 		_terminals.put(key, terminal);
 		client.addTerminal(terminal);

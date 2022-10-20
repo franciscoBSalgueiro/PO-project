@@ -7,10 +7,6 @@ public class FancyTerminal extends Terminal {
         super(key, client);
     }
 
-    public FancyTerminal(String key, Client client, TerminalStatus status) {
-        super(key, client, status);
-    }
-
     @Override
     public String toString() {
         return "FANCY|" + super.toString();
