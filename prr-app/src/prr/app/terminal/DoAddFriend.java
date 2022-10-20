@@ -1,6 +1,8 @@
 package prr.app.terminal;
 
 import prr.Network;
+import prr.app.exceptions.UnknownTerminalKeyException;
+import prr.exceptions.UnknownTerminalException;
 import prr.terminals.Terminal;
 import pt.tecnico.uilib.menus.CommandException;
 //FIXME add more imports if needed
@@ -18,7 +20,11 @@ class DoAddFriend extends TerminalCommand {
 	@Override
 	protected final void execute() throws CommandException {
 		String key = stringField("key");
-		Terminal friend = _network.getTerminal(key);
-		_receiver.addFriend(friend);
+		try {
+			Terminal friend = _network.getTerminal(key);
+			_receiver.addFriend(friend);
+		} catch (UnknownTerminalException e) {
+			throw new UnknownTerminalKeyException(key);
+		}
 	}
 }

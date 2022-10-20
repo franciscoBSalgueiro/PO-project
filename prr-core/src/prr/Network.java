@@ -36,23 +36,17 @@ public class Network implements Serializable {
 	private Map<String, Client> _clients = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 	private Map<String, Terminal> _terminals = new TreeMap<>();
 	private Map<Integer, Communication> _communications = new TreeMap<>();
-	private int _uuid = 0;
+	private int _uuid = 0; // unique identifier for communications
 
 	private int getUUID() {
 		return ++_uuid;
 	}
 
-	// FIXME define attributes
-	// FIXME define contructor(s)
-	// FIXME define methods
-
 	/**
 	 * Read text input file and create corresponding entities.
 	 * 
 	 * @param filename name of the text input file
-	 * @throws UnrecognizedEntryException if some entry is not correct
-	 * @throws IOException                if there is an IO erro while processing
-	 *                                    the text file
+	 * @throws ImportFileException
 	 */
 	void importFile(String filename) throws ImportFileException {
 		try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
@@ -62,7 +56,8 @@ public class Network implements Serializable {
 				try {
 					registerEntry(fields);
 				} catch (DuplicateClientException | UnknownTerminalException | DuplicateTerminalException
-						| UnknownClientException | UnrecognizedEntryException | InvalidTerminalException | UnknownTerminalTypeException e) {
+						| UnknownClientException | UnrecognizedEntryException | InvalidTerminalException
+						| UnknownTerminalTypeException e) {
 					// never happens
 					e.printStackTrace();
 				}
@@ -72,8 +67,21 @@ public class Network implements Serializable {
 		}
 	}
 
+	/**
+	 * Register an entry in the network
+	 * 
+	 * @param fields array of fields of the entry
+	 * @throws UnrecognizedEntryException
+	 * @throws DuplicateClientException
+	 * @throws UnknownTerminalException
+	 * @throws DuplicateTerminalException
+	 * @throws UnknownClientException
+	 * @throws InvalidTerminalException
+	 * @throws UnknownTerminalTypeException
+	 */
 	public void registerEntry(String... fields) throws DuplicateClientException, UnknownTerminalException,
-			DuplicateTerminalException, UnrecognizedEntryException, UnknownClientException, InvalidTerminalException, UnknownTerminalTypeException {
+			DuplicateTerminalException, UnrecognizedEntryException, UnknownClientException, InvalidTerminalException,
+			UnknownTerminalTypeException {
 		switch (fields[0]) {
 			case "CLIENT" -> registerClient(fields[1], fields[2], Integer.parseInt(fields[3]));
 			case "BASIC", "FANCY" -> registerTerminal(fields[1], fields[0], fields[2], fields[3]);
@@ -82,24 +90,39 @@ public class Network implements Serializable {
 		}
 	}
 
+	/**
+	 * Register friends for a client
+	 * 
+	 * @param fields
+	 * @throws UnknownTerminalException
+	 */
 	public void registerFriends(String... fields) throws UnknownTerminalException {
-		Terminal terminal = _terminals.get(fields[1]);
-		if (terminal == null) {
-			throw new UnknownTerminalException(fields[1]);
-		}
-		for (int i = 2; i < fields.length; i++) {
-			Terminal friend = _terminals.get(fields[i]);
-			if (friend == null) {
-				throw new UnknownTerminalException(fields[i]);
+		try {
+			Terminal terminal = getTerminal(fields[1]);
+			for (int i = 2; i < fields.length; i++) {
+				Terminal friend = getTerminal(fields[i]);
+				terminal.addFriend(friend);
 			}
-			terminal.addFriend(friend);
+		} catch (UnknownTerminalException e) {
+			throw new UnknownTerminalException(e.getKey());
 		}
+		
 	}
 
+	/**
+	 * Return all the clients as an unmodifiable collection.
+	 * 
+	 * @return a collection with all the clients.
+	 */
 	public Collection<Client> getAllClients() {
 		return Collections.unmodifiableCollection(_clients.values());
 	}
 
+	/**
+	 * @param key the client's key
+	 * @return the client with the given key
+	 * @throws UnknownClientException
+	 */
 	public Client getClient(String key) throws UnknownClientException {
 		Client client = _clients.get(key);
 		if (client == null) {
@@ -108,10 +131,21 @@ public class Network implements Serializable {
 		return client;
 	}
 
+	/**
+	 * Return all the terminals as an unmodifiable collection.
+	 * 
+	 * @return a collection with all the terminals.
+	 */
 	public Collection<Terminal> getAllTerminals() {
 		return Collections.unmodifiableCollection(_terminals.values());
 	}
 
+	/**
+	 * Return all the terminals that don't have communications as an unmodifiable
+	 * collection.
+	 * 
+	 * @return a collection with all the terminals that don't have communications.
+	 */
 	public Collection<Terminal> getUnusedTerminals() {
 		Collection<Terminal> unused = new ArrayList<>();
 		for (Terminal terminal : _terminals.values()) {
@@ -122,18 +156,39 @@ public class Network implements Serializable {
 		return unused;
 	}
 
-	public Terminal getTerminal(String key) {
+	/**
+	 * @param key the client's key
+	 * @return the client with the given key
+	 * @throws UnknownTerminalException
+	 */
+	public Terminal getTerminal(String key) throws UnknownTerminalException {
+		Terminal terminal = _terminals.get(key);
+		if (terminal == null) {
+			throw new UnknownTerminalException(key);
+		}
 		return _terminals.get(key);
 	}
 
+	/**
+	 * Return all the communications as an unmodifiable collection.
+	 * 
+	 * @return a collection with all the communications.
+	 */
 	public Collection<Communication> getAllCommunications() {
 		return Collections.unmodifiableCollection(_communications.values());
 	}
 
 	public Communication getCommunication(int id) {
+		// FIXME add exception if communication does not exist
 		return _communications.get(id);
 	}
 
+	/**
+	 * @param key
+	 * @param name
+	 * @param taxId
+	 * @throws DuplicateClientException
+	 */
 	public void registerClient(String key, String name, int taxId) throws DuplicateClientException {
 		if (_clients.containsKey(key)) {
 			throw new DuplicateClientException(key);
@@ -141,9 +196,19 @@ public class Network implements Serializable {
 		_clients.put(key, new Client(key, name, taxId));
 	}
 
-	// FIXME replace exception and catch it
+	/**
+	 * @param key
+	 * @param type
+	 * @param clientKey
+	 * @param status
+	 * @throws UnknownClientException
+	 * @throws DuplicateTerminalException
+	 * @throws InvalidTerminalException
+	 * @throws UnknownTerminalTypeException
+	 */
 	public void registerTerminal(String key, String type, String clientKey, String status)
-			throws UnknownClientException, DuplicateTerminalException, InvalidTerminalException, UnknownTerminalTypeException {
+			throws UnknownClientException, DuplicateTerminalException, InvalidTerminalException,
+			UnknownTerminalTypeException {
 		Terminal terminal;
 		Client client = _clients.get(clientKey);
 		if (key.length() != 6 || !key.matches("\\d+")) {
