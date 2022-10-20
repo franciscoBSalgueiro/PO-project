@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -34,7 +33,7 @@ public class Network implements Serializable {
 	/** Serial number for serialization. */
 	private static final long serialVersionUID = 202208091753L;
 
-	private Map<String, Client> _clients = new TreeMap<>();
+	private Map<String, Client> _clients = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 	private Map<String, Terminal> _terminals = new TreeMap<>();
 	private Map<Integer, Communication> _communications = new TreeMap<>();
 	private int _uuid = 0;
@@ -98,9 +97,7 @@ public class Network implements Serializable {
 	}
 
 	public Collection<Client> getAllClients() {
-		List<Client> list = new ArrayList<>(_clients.values());
-		Collections.sort(list);
-		return Collections.unmodifiableCollection(list);
+		return Collections.unmodifiableCollection(_clients.values());
 	}
 
 	public Client getClient(String key) throws UnknownClientException {

@@ -11,7 +11,7 @@ import prr.terminals.Terminal;
 /**
  * Abstract client.
  */
-public class Client implements Comparable<Client>, Serializable /* FIXME maybe addd more interfaces */ {
+public class Client implements Serializable /* FIXME maybe addd more interfaces */ {
         /** Serial number for serialization. */
         private static final long serialVersionUID = 202208091753L;
 
@@ -67,10 +67,5 @@ public class Client implements Comparable<Client>, Serializable /* FIXME maybe a
         public String toString() {
                 // CLIENT|key|name|taxId|type|notifications|terminals|payments|debts
                 return "CLIENT|" + _key + "|" + _name + "|" + _taxId + "|" + _type + "|" + (activeNotifications ? "YES" : "NO") + "|" + _terminals.size() + "|" + getPayments() + "|" + getDebts();
-        }
-
-        @Override
-        public int compareTo(Client client) {
-                return _key.compareToIgnoreCase(client.getKey());
         }
 }
