@@ -1,9 +1,9 @@
 package prr.app.main;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import prr.NetworkManager;
+import prr.app.exceptions.FileOpenFailedException;
 import prr.exceptions.MissingFileAssociationException;
 import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.Command;
@@ -19,19 +19,15 @@ class DoSaveFile extends Command<NetworkManager> {
 	}
 
 	@Override
-	protected final void execute() {
+	protected final void execute() throws FileOpenFailedException {
 		String filename = _receiver.getFilename();
 		if (filename == null) {
 			filename = Form.requestString(Prompt.newSaveAs());
 		}
 		try {
 			_receiver.saveAs(filename);
-		} catch (FileNotFoundException e) {
-			// FIXME implement error handling
-		} catch (MissingFileAssociationException e) {
-			// FIXME implement error handling
-		} catch (IOException e) {
-			// FIXME implement error handling
+		} catch (IOException | MissingFileAssociationException e) {
+			throw new FileOpenFailedException(e);
 		}
 	}
 }

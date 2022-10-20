@@ -48,7 +48,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         }
 
         public Collection<Communication> getCommunications() {
-                return Collections.unmodifiableCollection(_communications.values()); //n tenho certeza se isto faz o q devia
+                return Collections.unmodifiableCollection(_communications.values());
         }
 
         /**

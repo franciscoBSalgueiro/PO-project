@@ -48,14 +48,14 @@ public class Network implements Serializable {
 	// FIXME define methods
 
 	/**
-	 * Read text input file and create corresponding domain entities.
+	 * Read text input file and create corresponding entities.
 	 * 
 	 * @param filename name of the text input file
 	 * @throws UnrecognizedEntryException if some entry is not correct
 	 * @throws IOException                if there is an IO erro while processing
 	 *                                    the text file
 	 */
-	void importFile(String filename) throws UnrecognizedEntryException, IOException, ImportFileException {
+	void importFile(String filename) throws ImportFileException {
 		try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
 			String line;
 			while ((line = reader.readLine()) != null) {
@@ -68,7 +68,7 @@ public class Network implements Serializable {
 					e.printStackTrace();
 				}
 			}
-		} catch (IOException e1) {
+		} catch (IOException e) {
 			throw new ImportFileException(filename);
 		}
 	}
