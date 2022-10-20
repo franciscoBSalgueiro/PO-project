@@ -210,12 +210,9 @@ public class Network implements Serializable {
 			throws UnknownClientException, DuplicateTerminalException, InvalidTerminalException,
 			UnknownTerminalTypeException {
 		Terminal terminal;
-		Client client = _clients.get(clientKey);
+		Client client = getClient(clientKey);
 		if (key.length() != 6 || !key.matches("\\d+")) {
 			throw new InvalidTerminalException(key);
-		}
-		if (client == null) {
-			throw new UnknownClientException(clientKey);
 		}
 		if (_terminals.containsKey(key)) {
 			throw new DuplicateTerminalException(key);
