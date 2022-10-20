@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -97,7 +98,9 @@ public class Network implements Serializable {
 	}
 
 	public Collection<Client> getAllClients() {
-		return Collections.unmodifiableCollection(_clients.values());
+		List<Client> list = new ArrayList<>(_clients.values());
+		Collections.sort(list);
+		return Collections.unmodifiableCollection(list);
 	}
 
 	public Client getClient(String key) throws UnknownClientException {
