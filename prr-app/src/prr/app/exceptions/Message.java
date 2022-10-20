@@ -67,14 +67,6 @@ interface Message {
 	}
 
 	/**
-	 * @param type
-	 * @return string reporting invalid keys
-	 */
-	public static String invalidTerminalType(String type) {
-		return "O tipo '" + type + "' não é válido para terminais.";
-	}
-
-	/**
 	 * @param key
 	 * @return string with problem description.
 	 */

@@ -40,7 +40,7 @@ class DoRegisterTerminal extends Command<Network> {
 			throw new DuplicateTerminalKeyException(key);
 		} catch (UnknownTerminalTypeException e) {
 			// never happens
-			throw new InvalidTerminalKeyException(type);
+			e.printStackTrace();
 		}
 	}
 }
