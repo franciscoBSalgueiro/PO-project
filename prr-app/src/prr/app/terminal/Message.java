@@ -89,7 +89,7 @@ interface Message {
          * @return report message.
          */
         static String terminalPaymentsAndDebts(String key, long payments, long debts) {
-                return "Valores para o terminal '\" + key + \"':" + payments + " (pagamentos),  " + debts + " (dívidas).";
+                return "Valores para o terminal '" + key + "':" + payments + " (pagamentos),  " + debts + " (dívidas).";
 	}
 
 	/** @return status message. */
