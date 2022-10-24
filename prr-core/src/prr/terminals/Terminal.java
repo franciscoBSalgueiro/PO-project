@@ -1,10 +1,8 @@
 package prr.terminals;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -23,13 +21,13 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
 
         private Client _client;
         private String _key;
-        private List<Terminal> _friends;
+        private Map<String, Terminal> _friends;
         private TerminalStatus _status;
         private Map<Integer, Communication> _communications;
 
         Terminal(String key, Client client) {
                 _key = key;
-                _friends = new ArrayList<Terminal>();
+                _friends = new TreeMap<String, Terminal>();
                 _client = client;
                 _status = new IdleStatus(this);
                 _communications = new TreeMap<Integer, Communication>();
@@ -73,7 +71,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
 
         /* FIXME add Javadoc */
         public void addFriend(Terminal t) {
-                _friends.add(t);
+                _friends.put(t.getKey(), t);
         }
 
         /* FIXME add Javadoc */
@@ -82,7 +80,9 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 t.removeFriend(t);
         }
 
-        public void setStatus(TerminalStatus status) { _status = status; }
+        public void setStatus(TerminalStatus status) {
+                _status = status;
+        }
 
         /* FIXME add Javadoc */
         public void turnOff() {

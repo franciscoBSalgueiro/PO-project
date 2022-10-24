@@ -4,11 +4,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import prr.clients.Client;
 import prr.communications.Communication;
@@ -147,13 +147,7 @@ public class Network implements Serializable {
 	 * @return a collection with all the terminals that don't have communications.
 	 */
 	public Collection<Terminal> getUnusedTerminals() {
-		Collection<Terminal> unused = new ArrayList<>();
-		for (Terminal terminal : _terminals.values()) {
-			if (terminal.getCommunications().size() == 0) {
-				unused.add(terminal);
-			}
-		}
-		return unused;
+		return _terminals.values().stream().filter(t -> t.getCommunications().size() == 0).collect(Collectors.toList());
 	}
 
 	/**
