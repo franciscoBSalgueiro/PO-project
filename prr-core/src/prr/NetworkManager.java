@@ -35,9 +35,7 @@ public class NetworkManager {
 
 	/**
 	 * @param filename
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 * @return a new network recovered from file.
+	 * @throws UnavailableFileException
 	 **/
 	public void load(String filename) throws UnavailableFileException {
 		_filename = filename;
@@ -50,7 +48,7 @@ public class NetworkManager {
 
 	/**
 	 * @throws IOException
-	 * @throws UnnamedDBException
+	 * @throws MissingFileAssociationException
 	 */
 	public void save() throws IOException, MissingFileAssociationException {
 		if (_filename == null || _filename.equals(""))
@@ -66,7 +64,7 @@ public class NetworkManager {
 	 * 
 	 * @param filename
 	 * @throws IOException
-	 * @throws UnnamedDBException
+	 * @throws MissingFileAssociationException
 	 */
 	public void saveAs(String filename) throws IOException, MissingFileAssociationException {
 		_filename = filename;

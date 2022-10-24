@@ -25,7 +25,7 @@ public class IdleStatus extends TerminalStatus {
 
     @Override
     public void busy() {
-        getTerminal().setStatus(new BusyStatus(getTerminal()));
+        getTerminal().setStatus(new BusyStatus(getTerminal(), false));
     }
 
     @Override

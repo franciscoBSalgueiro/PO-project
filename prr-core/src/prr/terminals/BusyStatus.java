@@ -1,7 +1,13 @@
 package prr.terminals;
 
 public class BusyStatus extends TerminalStatus {
-    public BusyStatus(Terminal terminal) { super(terminal); }
+    private boolean _silent;
+    public BusyStatus(Terminal terminal, boolean silent) {
+        super(terminal);
+        _silent = silent;
+    }
+
+    public boolean wasSilent() { return _silent; }
 
     @Override
     public boolean canEndCurrentCommunication() {

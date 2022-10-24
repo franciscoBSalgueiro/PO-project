@@ -25,7 +25,7 @@ public class SilentStatus extends TerminalStatus {
 
     @Override
     public void busy() {
-        getTerminal().setStatus(new BusyStatus(getTerminal()));
+        getTerminal().setStatus(new BusyStatus(getTerminal(), true));
     }
 
     @Override
