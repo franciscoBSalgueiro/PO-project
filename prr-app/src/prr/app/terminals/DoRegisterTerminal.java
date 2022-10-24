@@ -16,12 +16,10 @@ import pt.tecnico.uilib.menus.CommandException;
  * Register terminal.
  */
 class DoRegisterTerminal extends Command<Network> {
-	String[] options = new String[] { "BASIC", "FANCY" };
-
 	DoRegisterTerminal(Network receiver) {
 		super(Label.REGISTER_TERMINAL, receiver);
 		addStringField("key", Prompt.terminalKey());
-		addOptionField("type", Prompt.terminalType(), options);
+		addOptionField("type", Prompt.terminalType(), "BASIC", "FANCY");
 		addStringField("clientKey", Prompt.clientKey());
 	}
 
