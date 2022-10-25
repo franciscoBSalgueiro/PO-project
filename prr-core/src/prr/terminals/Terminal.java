@@ -8,7 +8,7 @@ import java.util.TreeMap;
 
 import prr.clients.Client;
 import prr.communications.Communication;
-import prr.communications.TextCommunication;
+import prr.exceptions.DestinationUnavailableException;
 
 // FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
 
@@ -99,10 +99,12 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 _status.silence();
         }
 
-        public void sendTextCommunication(String message, Terminal destination) {
-                if (canStartCommunication() && isOn()) {
-                        Communication c = new TextCommunication(this, destination, message);
+        public void sendTextCommunication(int key, Communication c, Terminal destination)
+                        throws DestinationUnavailableException {
+                if (canStartCommunication() && destination.isOn()) {
                         _communications.put(c.getKey(), c);
+                } else {
+                        throw new DestinationUnavailableException();
                 }
         }
 

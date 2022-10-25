@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 import prr.clients.Client;
 import prr.communications.Communication;
+import prr.communications.TextCommunication;
+import prr.exceptions.DestinationUnavailableException;
 import prr.exceptions.DuplicateClientException;
 import prr.exceptions.DuplicateTerminalException;
 import prr.exceptions.ImportFileException;
@@ -106,7 +108,7 @@ public class Network implements Serializable {
 		} catch (UnknownTerminalException e) {
 			throw new UnknownTerminalException(e.getKey());
 		}
-		
+
 	}
 
 	/**
@@ -175,6 +177,15 @@ public class Network implements Serializable {
 	public Communication getCommunication(int id) {
 		// FIXME add exception if communication does not exist
 		return _communications.get(id);
+	}
+
+	public void sendTextCommunication(Terminal origin, String destination, String message)
+			throws UnknownTerminalException, DestinationUnavailableException {
+		int key = getUUID();
+		Terminal destinationTerminal = getTerminal(destination);
+		Communication communication = new TextCommunication(key, origin, destinationTerminal, message);
+		origin.sendTextCommunication(key, communication, destinationTerminal);
+		_communications.put(key, communication);
 	}
 
 	/**

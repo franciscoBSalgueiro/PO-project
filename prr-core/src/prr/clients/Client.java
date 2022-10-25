@@ -2,8 +2,10 @@ package prr.clients;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import prr.communications.Communication;
 import prr.exceptions.NotificationsAlreadyDisabledException;
 import prr.exceptions.NotificationsAlreadyEnabledException;
 import prr.terminals.Terminal;
@@ -69,6 +71,15 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
 
         public long getDebts() {
                 return 0;
+        }
+
+        public Collection<Communication> getCommunications() {
+                // FIXME DM doesnt like lists
+                List<Communication> communications = new ArrayList<Communication>();
+                for (Terminal t : _terminals) {
+                        communications.addAll(t.getCommunications());
+                }
+                return communications;
         }
 
         @Override
