@@ -1,3 +1,8 @@
 export CLASSPATH=$(pwd)/po-uilib/po-uilib.jar:$(pwd)/prr-core/prr-core.jar:$(pwd)/prr-app/prr-app.jar
 make
-java prr.app.App
+if [ $# -eq 0 ]
+then
+    java prr.app.App
+else
+    java -Dimport=./prr-tests-ei-daily/imports/$1.import prr.app.App
+fi
