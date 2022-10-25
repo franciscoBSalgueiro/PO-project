@@ -3,6 +3,7 @@ package prr.app.clients;
 import prr.Network;
 import prr.app.exceptions.UnknownClientKeyException;
 import prr.clients.Client;
+import prr.exceptions.NotificationsAlreadyDisabledException;
 import prr.exceptions.UnknownClientException;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
@@ -27,7 +28,10 @@ class DoDisableClientNotifications extends Command<Network> {
 		} catch (UnknownClientException e) {
 			throw new UnknownClientKeyException(key);
 		}
-		client.disableNotifications();
-		// FIXME add message if already enabled
+		try {
+			client.disableNotifications();
+		} catch (NotificationsAlreadyDisabledException e) {
+			_display.popup(Message.clientNotificationsAlreadyDisabled());
+		}
 	}
 }

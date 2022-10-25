@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import prr.exceptions.NotificationsAlreadyDisabledException;
+import prr.exceptions.NotificationsAlreadyEnabledException;
 import prr.terminals.Terminal;
 
 // FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
@@ -47,11 +49,17 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
                 _terminals.add(t);
         }
 
-        public void enableNotifications() {
+        public void enableNotifications() throws NotificationsAlreadyEnabledException {
+                if (activeNotifications) {
+                        throw new NotificationsAlreadyEnabledException();
+                }
                 activeNotifications = true;
         }
 
-        public void disableNotifications() {
+        public void disableNotifications() throws NotificationsAlreadyDisabledException {
+                if (!activeNotifications) {
+                        throw new NotificationsAlreadyDisabledException();
+                }
                 activeNotifications = false;
         }
 
