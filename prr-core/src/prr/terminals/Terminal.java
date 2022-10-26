@@ -24,6 +24,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         private Map<String, Terminal> _friends;
         private TerminalStatus _status;
         private Map<Integer, Communication> _communications;
+        private Communication _currentCommunication;
 
         Terminal(String key, Client client) {
                 _key = key;
@@ -76,8 +77,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
 
         /* FIXME add Javadoc */
         public void removeFriend(Terminal t) {
-                _friends.remove(t);
-                t.removeFriend(t);
+                _friends.remove(t.getKey());
         }
 
         public void setStatus(TerminalStatus status) {
