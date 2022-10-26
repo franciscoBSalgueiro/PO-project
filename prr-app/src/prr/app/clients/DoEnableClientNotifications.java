@@ -2,7 +2,6 @@ package prr.app.clients;
 
 import prr.Network;
 import prr.app.exceptions.UnknownClientKeyException;
-import prr.clients.Client;
 import prr.exceptions.NotificationsAlreadyEnabledException;
 import prr.exceptions.UnknownClientException;
 import pt.tecnico.uilib.menus.Command;
@@ -22,16 +21,12 @@ class DoEnableClientNotifications extends Command<Network> {
 	@Override
 	protected final void execute() throws CommandException {
 		String key = stringField("key");
-		Client client;
 		try {
-			client = _receiver.getClient(key);
-		} catch (UnknownClientException e) {
-			throw new UnknownClientKeyException(key);
-		}
-		try {
-			client.enableNotifications();
+			_receiver.enableNotifications(key);
 		} catch (NotificationsAlreadyEnabledException e) {
-			_display.popup(Message.clientNotificationsAlreadyDisabled());
+			_display.popup(Message.clientNotificationsAlreadyEnabled());
+		} catch (UnknownClientException e) {
+			throw new UnknownClientKeyException(e.getKey());
 		}
 	}
 }

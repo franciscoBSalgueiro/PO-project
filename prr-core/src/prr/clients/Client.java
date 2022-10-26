@@ -85,6 +85,8 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
         @Override
         public String toString() {
                 // CLIENT|key|name|taxId|type|notifications|terminals|payments|debts
-                return "CLIENT|" + _key + "|" + _name + "|" + _taxId + "|" + _type + "|" + (activeNotifications ? "YES" : "NO") + "|" + _terminals.size() + "|" + getPayments() + "|" + getDebts();
+                return "CLIENT|" + _key + "|" + _name + "|" + _taxId + "|" + _type + "|"
+                                + (activeNotifications ? "YES" : "NO") + "|" + _terminals.size() + "|" + getPayments()
+                                + "|" + getDebts();
         }
 }

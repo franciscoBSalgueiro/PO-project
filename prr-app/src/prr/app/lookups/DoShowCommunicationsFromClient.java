@@ -2,7 +2,6 @@ package prr.app.lookups;
 
 import prr.Network;
 import prr.app.exceptions.UnknownClientKeyException;
-import prr.clients.Client;
 import prr.exceptions.UnknownClientException;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
@@ -22,8 +21,7 @@ class DoShowCommunicationsFromClient extends Command<Network> {
 	protected final void execute() throws CommandException {
 		String key = stringField("key");
 		try {
-			Client client = _receiver.getClient(key);
-			_display.popup(client.getCommunications());
+			_display.popup(_receiver.getCommunicationsFromClient(key));
 		} catch (UnknownClientException e) {
 			throw new UnknownClientKeyException(key);
 		}

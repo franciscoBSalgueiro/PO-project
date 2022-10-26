@@ -18,6 +18,8 @@ import prr.exceptions.DuplicateClientException;
 import prr.exceptions.DuplicateTerminalException;
 import prr.exceptions.ImportFileException;
 import prr.exceptions.InvalidTerminalException;
+import prr.exceptions.NotificationsAlreadyDisabledException;
+import prr.exceptions.NotificationsAlreadyEnabledException;
 import prr.exceptions.UnknownClientException;
 import prr.exceptions.UnknownTerminalException;
 import prr.exceptions.UnknownTerminalTypeException;
@@ -67,6 +69,21 @@ public class Network implements Serializable {
 		} catch (IOException e) {
 			throw new ImportFileException(filename);
 		}
+	}
+
+	public void enableNotifications(String key) throws UnknownClientException, NotificationsAlreadyEnabledException {
+		Client client = getClient(key);
+		client.enableNotifications();
+	}
+
+	public void disableNotifications(String key) throws UnknownClientException, NotificationsAlreadyDisabledException {
+		Client client = getClient(key);
+		client.disableNotifications();
+	}
+
+	public Collection<Communication> getCommunicationsFromClient(String key) throws UnknownClientException {
+		Client client = getClient(key);
+		return client.getCommunications();
 	}
 
 	/**
@@ -199,6 +216,16 @@ public class Network implements Serializable {
 			throw new DuplicateClientException(key);
 		}
 		_clients.put(key, new Client(key, name, taxId));
+	}
+
+	public void addFriend(Terminal terminal, String friendKey) throws UnknownTerminalException {
+		Terminal friend = getTerminal(friendKey);
+		terminal.addFriend(friend);
+	}
+
+	public void removeFriend(Terminal terminal, String friendKey) throws UnknownTerminalException {
+		Terminal friend = getTerminal(friendKey);
+		terminal.removeFriend(friend);
 	}
 
 	/**
