@@ -67,11 +67,20 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
                 return 0;
         }
 
-        public Collection<Communication> getCommunications() {
+        public Collection<Communication> getInComms() {
                 // FIXME DM doesnt like lists
                 List<Communication> communications = new ArrayList<Communication>();
                 for (Terminal t : _terminals) {
-                        communications.addAll(t.getCommunications());
+                        communications.addAll(t.getInComms());
+                }
+                return communications;
+        }
+
+        public Collection<Communication> getOutComms() {
+                // FIXME DM doesnt like lists
+                List<Communication> communications = new ArrayList<Communication>();
+                for (Terminal t : _terminals) {
+                        communications.addAll(t.getOutComms());
                 }
                 return communications;
         }

@@ -80,12 +80,12 @@ public class Network implements Serializable {
 
 	public Collection<Communication> getCommunicationsFromClient(String key) throws UnknownClientException {
 		Client client = getClient(key);
-		return client.getCommunications();
+		return client.getOutComms();
 	}
 
 	public Collection<Communication> getCommunicationsToClient(String key) throws UnknownClientException {
 		Client client = getClient(key);
-		return client.getCommunications();
+		return client.getInComms();
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class Network implements Serializable {
 	 * @return a collection with all the terminals that don't have communications.
 	 */
 	public Collection<Terminal> getUnusedTerminals() {
-		return _terminals.values().stream().filter(t -> t.getCommunications().size() == 0).collect(Collectors.toList());
+		return _terminals.values().stream().filter(t -> t.getInComms().size() == 0).collect(Collectors.toList());
 	}
 
 	/**

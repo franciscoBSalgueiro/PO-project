@@ -23,7 +23,8 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         private String _key;
         private Map<String, Terminal> _friends;
         private TerminalStatus _status;
-        private Map<Integer, Communication> _communications;
+        private Map<Integer, Communication> _inComms;
+        private Map<Integer, Communication> _outComms;
         private Communication _currentCommunication;
 
         Terminal(String key, Client client) {
@@ -31,7 +32,8 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 _friends = new TreeMap<String, Terminal>();
                 _client = client;
                 _status = new IdleStatus(this);
-                _communications = new TreeMap<Integer, Communication>();
+                _inComms = new TreeMap<Integer, Communication>();
+                _outComms = new TreeMap<Integer, Communication>();
         }
 
         public String getKey() {
@@ -42,10 +44,13 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 return _status.isOn();
         }
 
-        public Collection<Communication> getCommunications() {
-                return Collections.unmodifiableCollection(_communications.values());
+        public Collection<Communication> getOutComms() {
+                return Collections.unmodifiableCollection(_outComms.values());
         }
 
+        public Collection<Communication> getInComms() {
+                return Collections.unmodifiableCollection(_inComms.values());
+        }
         /**
          * Checks if this terminal can end the current interactive communication.
          *
@@ -97,7 +102,9 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 Terminal destination = network.getTerminal(destinationKey);
                 if (canStartCommunication() && destination.isOn()) {
                         Communication communication = network.addCommunication(this, destination, message);
-                        _communications.put(communication.getKey(), communication);
+                        // FIXME probably there's a better way to do this
+                        _outComms.put(communication.getKey(), communication);
+                        destination._inComms.put(communication.getKey(), communication);
                 } else {
                         throw new DestinationUnavailableException();
                 }
