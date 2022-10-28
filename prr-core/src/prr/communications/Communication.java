@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 import prr.terminals.Terminal;
 
-// FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
-
 /**
  * Abstract Communication
  */
@@ -22,10 +20,6 @@ abstract public class Communication implements Serializable /* FIXME maybe addd 
         _origin = origin;
         _destination = destination;
     }
-
-    // FIXME define attributes
-    // FIXME define contructor(s)
-    // FIXME define methods
 
     public int getKey() { return _key; }
 

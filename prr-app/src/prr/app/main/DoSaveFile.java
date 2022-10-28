@@ -7,7 +7,6 @@ import prr.app.exceptions.FileOpenFailedException;
 import prr.exceptions.MissingFileAssociationException;
 import pt.tecnico.uilib.forms.Form;
 import pt.tecnico.uilib.menus.Command;
-//FIXME add more imports if needed
 
 /**
  * Command to save a file.

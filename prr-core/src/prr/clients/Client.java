@@ -10,8 +10,6 @@ import prr.exceptions.NotificationsAlreadyDisabledException;
 import prr.exceptions.NotificationsAlreadyEnabledException;
 import prr.terminals.Terminal;
 
-// FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
-
 /**
  * Abstract client.
  */
@@ -34,10 +32,6 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
                 _terminals = new ArrayList<Terminal>();
                 activeNotifications = true;
         }
-
-        // FIXME define attributes
-        // FIXME define contructor(s)
-        // FIXME define methods
 
         public String getKey() {
                 return _key;

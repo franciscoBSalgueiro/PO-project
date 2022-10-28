@@ -12,8 +12,6 @@ import prr.exceptions.ImportFileException;
 import prr.exceptions.MissingFileAssociationException;
 import prr.exceptions.UnavailableFileException;
 
-//FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
-
 /**
  * Manage access to network and implement load/save operations.
  */
@@ -23,7 +21,6 @@ public class NetworkManager {
 	/** The network itself. */
 	private Network _network = new Network();
 	private String _filename;
-	// FIXME addmore fields if needed
 
 	public Network getNetwork() {
 		return _network;

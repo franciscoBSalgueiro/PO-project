@@ -3,7 +3,6 @@ package prr.app.terminal;
 import prr.Network;
 import prr.terminals.Terminal;
 import pt.tecnico.uilib.menus.CommandException;
-//FIXME add more imports if needed
 
 /**
  * Turn off the terminal.

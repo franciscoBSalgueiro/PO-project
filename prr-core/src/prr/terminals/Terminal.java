@@ -12,8 +12,6 @@ import prr.communications.Communication;
 import prr.exceptions.DestinationUnavailableException;
 import prr.exceptions.UnknownTerminalException;
 
-// FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
-
 /**
  * Abstract terminal.
  */
@@ -35,10 +33,6 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 _status = new IdleStatus(this);
                 _communications = new TreeMap<Integer, Communication>();
         }
-
-        // FIXME define attributes
-        // FIXME define contructor(s)
-        // FIXME define methods
 
         public String getKey() {
                 return _key;
@@ -72,13 +66,11 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 return _status.canStartCommunication();
         }
 
-        /* FIXME add Javadoc */
         public void addFriend(Network network, String friendKey) throws UnknownTerminalException {
                 Terminal friend = network.getTerminal(friendKey);
                 _friends.put(friendKey, friend);
         }
 
-        /* FIXME add Javadoc */
         public void removeFriend(Network network, String friendKey) throws UnknownTerminalException {
                 Terminal friend = network.getTerminal(friendKey);
                 _friends.remove(friendKey, friend);
@@ -88,17 +80,14 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 _status = status;
         }
 
-        /* FIXME add Javadoc */
         public void turnOff() {
                 _status.turnOff();
         }
 
-        /* FIXME add Javadoc */
         public void turnOn() {
                 _status.turnOn();
         }
 
-        /* FIXME add Javadoc */
         public void silence() {
                 _status.silence();
         }

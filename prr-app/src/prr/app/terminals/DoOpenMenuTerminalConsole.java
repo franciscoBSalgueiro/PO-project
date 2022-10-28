@@ -6,7 +6,6 @@ import prr.exceptions.UnknownTerminalException;
 import prr.terminals.Terminal;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
-//FIXME add mode import if needed
 
 /**
  * Open a specific terminal's menu.

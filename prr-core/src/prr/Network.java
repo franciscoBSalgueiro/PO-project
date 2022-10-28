@@ -27,8 +27,6 @@ import prr.terminals.BasicTerminal;
 import prr.terminals.FancyTerminal;
 import prr.terminals.Terminal;
 
-// FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
-
 /**
  * Class Store implements a store.
  */
@@ -81,6 +79,11 @@ public class Network implements Serializable {
 	}
 
 	public Collection<Communication> getCommunicationsFromClient(String key) throws UnknownClientException {
+		Client client = getClient(key);
+		return client.getCommunications();
+	}
+
+	public Collection<Communication> getCommunicationsToClient(String key) throws UnknownClientException {
 		Client client = getClient(key);
 		return client.getCommunications();
 	}
