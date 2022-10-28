@@ -6,9 +6,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
+import prr.Network;
 import prr.clients.Client;
 import prr.communications.Communication;
 import prr.exceptions.DestinationUnavailableException;
+import prr.exceptions.UnknownTerminalException;
 
 // FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
 
@@ -71,13 +73,15 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         }
 
         /* FIXME add Javadoc */
-        public void addFriend(Terminal t) {
-                _friends.put(t.getKey(), t);
+        public void addFriend(Network network, String friendKey) throws UnknownTerminalException {
+                Terminal friend = network.getTerminal(friendKey);
+                _friends.put(friendKey, friend);
         }
 
         /* FIXME add Javadoc */
-        public void removeFriend(Terminal t) {
-                _friends.remove(t.getKey());
+        public void removeFriend(Network network, String friendKey) throws UnknownTerminalException {
+                Terminal friend = network.getTerminal(friendKey);
+                _friends.remove(friendKey, friend);
         }
 
         public void setStatus(TerminalStatus status) {
@@ -99,10 +103,12 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 _status.silence();
         }
 
-        public void sendTextCommunication(int key, Communication c, Terminal destination)
-                        throws DestinationUnavailableException {
+        public void sendTextCommunication(Network network, String destinationKey, String message)
+                        throws DestinationUnavailableException, UnknownTerminalException {
+                Terminal destination = network.getTerminal(destinationKey);
                 if (canStartCommunication() && destination.isOn()) {
-                        _communications.put(c.getKey(), c);
+                        Communication communication = network.addCommunication(this, destination, message);
+                        _communications.put(communication.getKey(), communication);
                 } else {
                         throw new DestinationUnavailableException();
                 }

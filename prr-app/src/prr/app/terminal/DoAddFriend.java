@@ -21,7 +21,7 @@ class DoAddFriend extends TerminalCommand {
 	protected final void execute() throws CommandException {
 		String key = stringField("key");
 		try {
-			_network.addFriend(_receiver, key);
+			_receiver.addFriend(_network,key);
 		} catch (UnknownTerminalException e) {
 			throw new UnknownTerminalKeyException(key);
 		}

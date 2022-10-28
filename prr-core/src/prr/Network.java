@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import prr.clients.Client;
 import prr.communications.Communication;
 import prr.communications.TextCommunication;
-import prr.exceptions.DestinationUnavailableException;
 import prr.exceptions.DuplicateClientException;
 import prr.exceptions.DuplicateTerminalException;
 import prr.exceptions.ImportFileException;
@@ -119,8 +118,7 @@ public class Network implements Serializable {
 		try {
 			Terminal terminal = getTerminal(fields[1]);
 			for (int i = 2; i < fields.length; i++) {
-				Terminal friend = getTerminal(fields[i]);
-				terminal.addFriend(friend);
+				terminal.addFriend(this, fields[i]);
 			}
 		} catch (UnknownTerminalException e) {
 			throw new UnknownTerminalException(e.getKey());
@@ -196,13 +194,11 @@ public class Network implements Serializable {
 		return _communications.get(id);
 	}
 
-	public void sendTextCommunication(Terminal origin, String destination, String message)
-			throws UnknownTerminalException, DestinationUnavailableException {
+	public Communication addCommunication(Terminal origin, Terminal destination, String message) {
 		int key = getUUID();
-		Terminal destinationTerminal = getTerminal(destination);
-		Communication communication = new TextCommunication(key, origin, destinationTerminal, message);
-		origin.sendTextCommunication(key, communication, destinationTerminal);
+		Communication communication = new TextCommunication(key, origin, destination, message);
 		_communications.put(key, communication);
+		return communication;
 	}
 
 	/**
@@ -216,16 +212,6 @@ public class Network implements Serializable {
 			throw new DuplicateClientException(key);
 		}
 		_clients.put(key, new Client(key, name, taxId));
-	}
-
-	public void addFriend(Terminal terminal, String friendKey) throws UnknownTerminalException {
-		Terminal friend = getTerminal(friendKey);
-		terminal.addFriend(friend);
-	}
-
-	public void removeFriend(Terminal terminal, String friendKey) throws UnknownTerminalException {
-		Terminal friend = getTerminal(friendKey);
-		terminal.removeFriend(friend);
 	}
 
 	/**
