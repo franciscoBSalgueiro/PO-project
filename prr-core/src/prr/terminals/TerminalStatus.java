@@ -20,11 +20,19 @@ public abstract class TerminalStatus implements Serializable {
 
 	public void turnOff() {}
 	public void turnOn() {}
-	public void silence() {}
-	public void busy() {}
+	public void turnSilent() {}
+	public void turnBusy() {}
 
 	public boolean isOn() {
 		return true;
+	}
+
+	public boolean isBusy() {
+		return false;
+	}
+
+	public boolean isSilent() {
+		return false;
 	}
 
 	@Override

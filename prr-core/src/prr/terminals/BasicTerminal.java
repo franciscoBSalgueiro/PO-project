@@ -8,6 +8,11 @@ public class BasicTerminal extends Terminal {
     }
 
     @Override
+    public boolean supportsInteractiveCommunications() {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "BASIC|" + super.toString();
     }

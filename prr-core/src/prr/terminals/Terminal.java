@@ -9,8 +9,13 @@ import java.util.TreeMap;
 import prr.Network;
 import prr.clients.Client;
 import prr.communications.Communication;
-import prr.exceptions.DestinationUnavailableException;
+import prr.exceptions.DestinationIsBusyException;
+import prr.exceptions.DestinationIsOffException;
+import prr.exceptions.DestinationIsSilentException;
+import prr.exceptions.NoCurrentCommunicationException;
 import prr.exceptions.UnknownTerminalException;
+import prr.exceptions.UnsupportedAtDestinationException;
+import prr.exceptions.UnsupportedAtOriginException;
 
 /**
  * Abstract terminal.
@@ -44,12 +49,29 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 return _status.isOn();
         }
 
+        public boolean isBusy() {
+                return _status.isBusy();
+        }
+
+        public boolean isSilent() {
+                return _status.isSilent();
+        }
+
+        abstract public boolean supportsInteractiveCommunications();
+
         public Collection<Communication> getOutComms() {
                 return Collections.unmodifiableCollection(_outComms.values());
         }
 
         public Collection<Communication> getInComms() {
                 return Collections.unmodifiableCollection(_inComms.values());
+        }
+
+        public Communication getCurrentCommunication() throws NoCurrentCommunicationException {
+                if (_currentCommunication == null) {
+                        throw new NoCurrentCommunicationException();
+                }
+                return _currentCommunication;
         }
         /**
          * Checks if this terminal can end the current interactive communication.
@@ -94,19 +116,54 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         }
 
         public void silence() {
-                _status.silence();
+                _status.turnSilent();
         }
 
         public void sendTextCommunication(Network network, String destinationKey, String message)
-                        throws DestinationUnavailableException, UnknownTerminalException {
+                        throws DestinationIsOffException, UnknownTerminalException {
                 Terminal destination = network.getTerminal(destinationKey);
-                if (canStartCommunication() && destination.isOn()) {
-                        Communication communication = network.addCommunication(this, destination, message);
+                if (!destination.isOn()) {
+                        throw new DestinationIsOffException(destinationKey);
+                }
+                if (canStartCommunication()) {
+                        Communication communication = network.addTextCommunication(this, destination, message);
                         // FIXME probably there's a better way to do this
                         _outComms.put(communication.getKey(), communication);
                         destination._inComms.put(communication.getKey(), communication);
                 } else {
-                        throw new DestinationUnavailableException();
+                        // FIXME maybe throw an exception
+                }
+        }
+
+        public void startInteractiveCommunication(Network network, String destinationKey, String type)
+                        throws DestinationIsOffException, DestinationIsBusyException, DestinationIsSilentException,
+                        UnknownTerminalException, UnsupportedAtOriginException, UnsupportedAtDestinationException {
+                Terminal destination = network.getTerminal(destinationKey);
+                if (!supportsInteractiveCommunications()) {
+                        throw new UnsupportedAtOriginException(_key, type);
+                }
+                if (!destination.supportsInteractiveCommunications()) {
+                        throw new UnsupportedAtDestinationException(destinationKey, type);
+                }
+                if (destination.isBusy()) {
+                        throw new DestinationIsBusyException(destinationKey);
+                }
+                if (destination.isSilent()) {
+                        throw new DestinationIsSilentException(destinationKey);
+                }
+                if (!destination.isOn()) {
+                        throw new DestinationIsOffException(destinationKey);
+                }
+                if (canStartCommunication()) {
+                        Communication communication = network.addInteractiveCommunication(this, destination, type);
+                        // FIXME probably there's a better way to do this
+                        _currentCommunication = communication;
+                        _status.turnBusy();
+                        destination._status.turnBusy();
+                        _outComms.put(communication.getKey(), communication);
+                        destination._inComms.put(communication.getKey(), communication);
+                } else {
+                        // FIXME Add exception
                 }
         }
 

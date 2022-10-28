@@ -19,12 +19,12 @@ public class IdleStatus extends TerminalStatus {
     }
 
     @Override
-    public void silence() {
+    public void turnSilent() {
         getTerminal().setStatus(new SilentStatus(getTerminal()));
     }
 
     @Override
-    public void busy() {
+    public void turnBusy() {
         getTerminal().setStatus(new BusyStatus(getTerminal(), false));
     }
 

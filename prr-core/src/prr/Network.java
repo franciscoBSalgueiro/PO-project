@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import prr.clients.Client;
 import prr.communications.Communication;
 import prr.communications.TextCommunication;
+import prr.communications.VideoCommunication;
+import prr.communications.VoiceCommunication;
 import prr.exceptions.DuplicateClientException;
 import prr.exceptions.DuplicateTerminalException;
 import prr.exceptions.ImportFileException;
@@ -197,9 +199,26 @@ public class Network implements Serializable {
 		return _communications.get(id);
 	}
 
-	public Communication addCommunication(Terminal origin, Terminal destination, String message) {
+	public Communication addTextCommunication(Terminal origin, Terminal destination, String message) {
 		int key = getUUID();
 		Communication communication = new TextCommunication(key, origin, destination, message);
+		_communications.put(key, communication);
+		return communication;
+	}
+
+	public Communication addInteractiveCommunication(Terminal origin, Terminal destination, String type) {
+		Communication communication;
+		int key = getUUID();
+		switch (type) {
+			case "VOICE" -> {
+				communication = new VoiceCommunication(key, origin, destination);
+			}
+			case "VIDEO" -> {
+				communication = new VideoCommunication(key, origin, destination);
+			}
+			// FIXME add real exception
+			default -> throw new IllegalArgumentException("Unknown communication type: " + type);
+		}
 		_communications.put(key, communication);
 		return communication;
 	}

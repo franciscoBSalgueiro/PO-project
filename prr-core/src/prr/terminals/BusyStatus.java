@@ -7,6 +7,11 @@ public class BusyStatus extends TerminalStatus {
         _silent = silent;
     }
 
+    @Override
+    public boolean isBusy() {
+        return true;
+    }
+
     public boolean wasSilent() { return _silent; }
 
     @Override
@@ -25,7 +30,7 @@ public class BusyStatus extends TerminalStatus {
     }
 
     @Override
-    public void silence() {
+    public void turnSilent() {
         getTerminal().setStatus(new SilentStatus(getTerminal()));
     }
     

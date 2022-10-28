@@ -8,6 +8,11 @@ public class FancyTerminal extends Terminal {
     }
 
     @Override
+    public boolean supportsInteractiveCommunications() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         return "FANCY|" + super.toString();
     }

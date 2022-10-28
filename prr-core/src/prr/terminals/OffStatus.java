@@ -24,7 +24,7 @@ public class OffStatus extends TerminalStatus {
     }
 
     @Override
-    public void silence() {
+    public void turnSilent() {
         getTerminal().setStatus(new SilentStatus(getTerminal()));
     }
 
