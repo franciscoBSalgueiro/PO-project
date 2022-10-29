@@ -1,5 +1,6 @@
 package prr.communications;
 
+import prr.clients.Client;
 import prr.terminals.Terminal;
 
 public class VoiceCommunication extends InteractiveCommunication {
@@ -10,5 +11,12 @@ public class VoiceCommunication extends InteractiveCommunication {
     @Override
     public String toString() {
         return "VOICE|" + super.toString();
+    }
+
+    @Override
+    public long calculateCost(Client client) {
+        long cost = client.getCost(this);
+        setCost(cost);
+        return cost;
     }
 }

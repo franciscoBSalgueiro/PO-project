@@ -2,6 +2,7 @@ package prr.communications;
 
 import java.io.Serializable;
 
+import prr.clients.Client;
 import prr.terminals.Terminal;
 
 /**
@@ -32,6 +33,8 @@ abstract public class Communication implements Serializable /* FIXME maybe addd 
         return _destination;
     }
 
+    abstract public long calculateCost(Client client);
+
     public long getCost() {
         return _cost;
     }
@@ -40,9 +43,12 @@ abstract public class Communication implements Serializable /* FIXME maybe addd 
         _cost = cost;
     }
 
+    abstract int getUnits();
+    abstract String getStatus();
+
     @Override
     // type|idCommunication|idSender|idReceiver|units|price|status
     public String toString() {
-        return _key + "|" + _origin.getKey() + "|" + _destination.getKey();
+        return _key + "|" + _origin.getKey() + "|" + _destination.getKey() + "|" + getUnits() + "|" + _cost + "|" + getStatus();
     }
 }

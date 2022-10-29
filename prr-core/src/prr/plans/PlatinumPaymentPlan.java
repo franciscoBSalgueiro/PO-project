@@ -7,7 +7,7 @@ import prr.communications.VoiceCommunication;
 public class PlatinumPaymentPlan extends PaymentPlan {
     @Override
     public int getTextCost(TextCommunication communication) {
-        int size = communication.getSize();
+        int size = communication.getUnits();
         if (size < 50) {
             return 0;
         } else {
@@ -17,13 +17,13 @@ public class PlatinumPaymentPlan extends PaymentPlan {
 
     @Override
     public int getVoiceCost(VoiceCommunication communication) {
-        int duration = communication.getDuration();
+        int duration = communication.getUnits();
         return 10 * duration;
     }
 
     @Override
     public int getVideoCost(VideoCommunication communication) {
-        int duration = communication.getDuration();
+        int duration = communication.getUnits();
         return 10 * duration;
     }
 }

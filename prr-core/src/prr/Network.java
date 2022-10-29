@@ -204,7 +204,7 @@ public class Network implements Serializable {
 	public TextCommunication addTextCommunication(Terminal origin, Client originClient ,Terminal destination, String message) {
 		int key = getUUID();
 		TextCommunication communication = new TextCommunication(key, origin, destination, message);
-		long cost = originClient.getTextCost(communication);
+		long cost = originClient.getCost(communication);
 		communication.setCost(cost);
 		_communications.put(key, communication);
 		return communication;

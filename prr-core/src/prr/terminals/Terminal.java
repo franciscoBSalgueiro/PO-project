@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import prr.Network;
 import prr.clients.Client;
 import prr.communications.Communication;
+import prr.communications.InteractiveCommunication;
 import prr.communications.TextCommunication;
 import prr.exceptions.DestinationIsBusyException;
 import prr.exceptions.DestinationIsOffException;
@@ -31,7 +32,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         private TerminalStatus _status;
         private Map<Integer, Communication> _inComms;
         private Map<Integer, Communication> _outComms;
-        private Communication _currentCommunication;
+        private InteractiveCommunication _currentCommunication;
 
         Terminal(String key, Client client) {
                 _key = key;
@@ -140,7 +141,8 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                         throw new DestinationIsOffException(destinationKey);
                 }
                 if (canStartCommunication()) {
-                        TextCommunication communication = network.addTextCommunication(this, _client, destination, message);
+                        TextCommunication communication = network.addTextCommunication(this, _client, destination,
+                                        message);
                         // FIXME probably there's a better way to do this
                         _outComms.put(communication.getKey(), communication);
                         destination._inComms.put(communication.getKey(), communication);
@@ -171,7 +173,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                         throw new DestinationIsOffException(destinationKey);
                 }
                 if (canStartCommunication()) {
-                        Communication communication = network.addInteractiveCommunication(this, destination, type);
+                        InteractiveCommunication communication = network.addInteractiveCommunication(this, destination, type);
                         // FIXME probably there's a better way to do this
                         _currentCommunication = communication;
                         _status.turnBusy();
@@ -183,9 +185,19 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 }
         }
 
+        public long endCurrentCommunication(Network network, int duration) /* throws NoCurrentCommunicationException */ {
+                _currentCommunication.end(duration);
+                long cost = _currentCommunication.calculateCost(_client);
+                setStatus(new IdleStatus(this));
+                _currentCommunication.getDestination().setStatus(new IdleStatus(_currentCommunication.getDestination()));
+                _currentCommunication = null;
+                return cost;
+                
+        }
+
         @Override
         public String toString() {
                 // terminalType|terminalId|clientId|terminalStatus|balance-paid|balance-debts|friend1,...,friend
-                return _key + "|" + _client.getKey() + "|" + _status + "|" + "0" + "|" + "0";
+                return _key + "|" + _client.getKey() + "|" + _status + "|" + getPayments() + "|" + getDebts();
         }
 }

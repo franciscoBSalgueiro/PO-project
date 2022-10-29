@@ -36,16 +36,15 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
                 activeNotifications = true;
         }
 
-
-        public int getTextCost(TextCommunication communication) {
+        public int getCost(TextCommunication communication) {
                 return _type.getTextCost(communication);
         }
 
-        public int getVoiceCost(VoiceCommunication communication) {
+        public int getCost(VoiceCommunication communication) {
                 return _type.getVoiceCost(communication);
         }
 
-        public int getVideoCost(VideoCommunication communication) {
+        public int getCost(VideoCommunication communication) {
                 return _type.getVideoCost(communication);
         }
 

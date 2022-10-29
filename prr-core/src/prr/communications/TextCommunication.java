@@ -1,5 +1,6 @@
 package prr.communications;
 
+import prr.clients.Client;
 import prr.terminals.Terminal;
 
 public class TextCommunication extends Communication {
@@ -12,10 +13,21 @@ public class TextCommunication extends Communication {
 
     @Override
     public String toString() {
-        return "TEXT|" + super.toString() + "|" + _message.length();
+        return "TEXT|" + super.toString();
     }
 
-    public int getSize() {
+    @Override
+    public int getUnits() {
         return _message.length();
+    }
+
+    @Override
+    String getStatus() {
+        return "FINISHED";
+    }
+
+    @Override
+    public long calculateCost(Client client) {
+        return client.getCost(this);
     }
 }
