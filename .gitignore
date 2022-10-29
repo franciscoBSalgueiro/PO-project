@@ -2,7 +2,9 @@ CVS/
 .idea/
 *.class
 *.jar
+*.dat
 bin/
 .settings/
-prr-tests-ei-daily/
+tests/tests-ef/
+tests/tests-ei/
 .vscode/
