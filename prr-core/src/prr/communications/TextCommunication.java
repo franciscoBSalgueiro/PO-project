@@ -7,12 +7,15 @@ public class TextCommunication extends Communication {
 
     public TextCommunication(int key, Terminal origin, Terminal destination, String message) {
         super(key, origin, destination);
-        this._message = message;
+        _message = message;
     }
 
     @Override
     public String toString() {
         return "TEXT|" + super.toString() + "|" + _message.length();
     }
-    
+
+    public int getSize() {
+        return _message.length();
+    }
 }

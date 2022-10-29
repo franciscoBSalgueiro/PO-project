@@ -6,6 +6,9 @@ import java.util.Collection;
 import java.util.List;
 
 import prr.communications.Communication;
+import prr.communications.TextCommunication;
+import prr.communications.VideoCommunication;
+import prr.communications.VoiceCommunication;
 import prr.exceptions.NotificationsAlreadyDisabledException;
 import prr.exceptions.NotificationsAlreadyEnabledException;
 import prr.terminals.Terminal;
@@ -21,7 +24,7 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
         private String _name;
         private int _taxId;
         private ClientType _type;
-        private List<Terminal> _terminals;
+        private List<Terminal> _terminals; // FIXME maybe change to a map
         private boolean activeNotifications;
 
         public Client(String key, String name, int taxId) {
@@ -33,12 +36,21 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
                 activeNotifications = true;
         }
 
-        public String getKey() {
-                return _key;
+
+        public int getTextCost(TextCommunication communication) {
+                return _type.getTextCost(communication);
         }
 
-        public void setClientType(ClientType type) {
-                _type = type;
+        public int getVoiceCost(VoiceCommunication communication) {
+                return _type.getVoiceCost(communication);
+        }
+
+        public int getVideoCost(VideoCommunication communication) {
+                return _type.getVideoCost(communication);
+        }
+
+        public String getKey() {
+                return _key;
         }
 
         public void addTerminal(Terminal t) {
@@ -64,7 +76,11 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
         }
 
         public long getDebts() {
-                return 0;
+                long total = 0;
+                for (Terminal t : _terminals) {
+                        total += t.getDebts();
+                }
+                return total;
         }
 
         public Collection<Communication> getInComms() {

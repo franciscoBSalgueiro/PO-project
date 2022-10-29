@@ -15,6 +15,9 @@ class DoShowTerminalBalance extends TerminalCommand {
 
 	@Override
 	protected final void execute() throws CommandException {
-                //FIXME implement command
+		String key = _receiver.getKey();
+		long debts = _receiver.getDebts();
+		long payments = _receiver.getPayments();
+		_display.popup(Message.terminalPaymentsAndDebts(key, payments, debts));
 	}
 }

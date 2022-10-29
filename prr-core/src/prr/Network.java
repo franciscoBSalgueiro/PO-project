@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import prr.clients.Client;
 import prr.communications.Communication;
+import prr.communications.InteractiveCommunication;
 import prr.communications.TextCommunication;
 import prr.communications.VideoCommunication;
 import prr.communications.VoiceCommunication;
@@ -200,15 +201,17 @@ public class Network implements Serializable {
 		return _communications.get(id);
 	}
 
-	public Communication addTextCommunication(Terminal origin, Terminal destination, String message) {
+	public TextCommunication addTextCommunication(Terminal origin, Client originClient ,Terminal destination, String message) {
 		int key = getUUID();
-		Communication communication = new TextCommunication(key, origin, destination, message);
+		TextCommunication communication = new TextCommunication(key, origin, destination, message);
+		long cost = originClient.getTextCost(communication);
+		communication.setCost(cost);
 		_communications.put(key, communication);
 		return communication;
 	}
 
-	public Communication addInteractiveCommunication(Terminal origin, Terminal destination, String type) {
-		Communication communication;
+	public InteractiveCommunication addInteractiveCommunication(Terminal origin, Terminal destination, String type) {
+		InteractiveCommunication communication;
 		int key = getUUID();
 		switch (type) {
 			case "VOICE" -> {

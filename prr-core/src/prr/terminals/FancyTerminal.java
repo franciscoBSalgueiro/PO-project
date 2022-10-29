@@ -8,7 +8,7 @@ public class FancyTerminal extends Terminal {
     }
 
     @Override
-    public boolean supportsInteractiveCommunications() {
+    public boolean supportsVideoCommunications() {
         return true;
     }
 

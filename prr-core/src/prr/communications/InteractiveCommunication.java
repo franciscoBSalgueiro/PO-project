@@ -8,4 +8,8 @@ public abstract class InteractiveCommunication extends Communication {
     public InteractiveCommunication(int key, Terminal origin, Terminal destination) {
         super(key, origin, destination);
     }
+
+    public int getDuration() {
+        return _duration;
+    }
 }
