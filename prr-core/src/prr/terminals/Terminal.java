@@ -15,6 +15,9 @@ import prr.exceptions.DestinationIsBusyException;
 import prr.exceptions.DestinationIsOffException;
 import prr.exceptions.DestinationIsSilentException;
 import prr.exceptions.NoCurrentCommunicationException;
+import prr.exceptions.TerminalAlreadyIdleException;
+import prr.exceptions.TerminalAlreadyOffException;
+import prr.exceptions.TerminalAlreadySilentException;
 import prr.exceptions.UnknownTerminalException;
 import prr.exceptions.UnsupportedAtDestinationException;
 import prr.exceptions.UnsupportedAtOriginException;
@@ -110,7 +113,9 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
 
         public void addFriend(Network network, String friendKey) throws UnknownTerminalException {
                 Terminal friend = network.getTerminal(friendKey);
-                _friends.put(friendKey, friend);
+                if (friend != this) {
+                        _friends.put(friendKey, friend);
+                }
         }
 
         public void removeFriend(Network network, String friendKey) throws UnknownTerminalException {
@@ -122,15 +127,15 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 _status = status;
         }
 
-        public void turnOff() {
+        public void turnOff() throws TerminalAlreadyOffException {
                 _status.turnOff();
         }
 
-        public void turnOn() {
-                _status.turnOn();
+        public void turnOn() throws TerminalAlreadyIdleException {
+                _status.turnIdle();
         }
 
-        public void silence() {
+        public void silence() throws TerminalAlreadySilentException {
                 _status.turnSilent();
         }
 

@@ -22,6 +22,9 @@ import prr.exceptions.ImportFileException;
 import prr.exceptions.InvalidTerminalException;
 import prr.exceptions.NotificationsAlreadyDisabledException;
 import prr.exceptions.NotificationsAlreadyEnabledException;
+import prr.exceptions.TerminalAlreadyIdleException;
+import prr.exceptions.TerminalAlreadyOffException;
+import prr.exceptions.TerminalAlreadySilentException;
 import prr.exceptions.UnknownClientException;
 import prr.exceptions.UnknownTerminalException;
 import prr.exceptions.UnknownTerminalTypeException;
@@ -201,7 +204,8 @@ public class Network implements Serializable {
 		return _communications.get(id);
 	}
 
-	public TextCommunication addTextCommunication(Terminal origin, Client originClient ,Terminal destination, String message) {
+	public TextCommunication addTextCommunication(Terminal origin, Client originClient, Terminal destination,
+			String message) {
 		int key = getUUID();
 		TextCommunication communication = new TextCommunication(key, origin, destination, message);
 		long cost = originClient.getCost(communication);
@@ -268,11 +272,15 @@ public class Network implements Serializable {
 		} else {
 			throw new UnknownTerminalTypeException(type);
 		}
-		switch (status) {
-			case "ON" -> terminal.turnOn();
-			case "OFF" -> terminal.turnOff();
-			case "SILENCE" -> terminal.silence();
-			default -> throw new InvalidTerminalException(key);
+		try {
+
+			switch (status) {
+				case "ON" -> terminal.turnOn();
+				case "OFF" -> terminal.turnOff();
+				case "SILENCE" -> terminal.silence();
+				default -> throw new InvalidTerminalException(key);
+			}
+		} catch (TerminalAlreadyIdleException | TerminalAlreadyOffException | TerminalAlreadySilentException e) {
 		}
 		_terminals.put(key, terminal);
 		client.addTerminal(terminal);

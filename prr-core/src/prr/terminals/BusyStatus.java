@@ -23,7 +23,7 @@ public class BusyStatus extends TerminalStatus {
     }
 
     @Override
-    public void turnOn() {
+    public void turnIdle() {
         getTerminal().setStatus(new IdleStatus(getTerminal()));
     }
 
@@ -31,6 +31,12 @@ public class BusyStatus extends TerminalStatus {
     public void turnSilent() {
         getTerminal().setStatus(new SilentStatus(getTerminal()));
     }
+
+    @Override
+    public void turnBusy() {};
+
+    @Override
+    public void turnOff() {};
 
     @Override
     public void revert() {

@@ -2,6 +2,10 @@ package prr.terminals;
 
 import java.io.Serializable;
 
+import prr.exceptions.TerminalAlreadyIdleException;
+import prr.exceptions.TerminalAlreadyOffException;
+import prr.exceptions.TerminalAlreadySilentException;
+
 /**
  * Abstract terminal status. Possible status are Idle or Off.
  */
@@ -18,11 +22,11 @@ public abstract class TerminalStatus implements Serializable {
 	abstract public boolean canEndCurrentCommunication();
 	abstract public boolean canStartCommunication();
 
-	public void turnOff() {}
-	public void turnOn() {}
-	public void turnSilent() {}
-	public void turnBusy() {}
-	public void revert() {}
+	abstract public void turnOff() throws TerminalAlreadyOffException;
+	abstract public void turnIdle() throws TerminalAlreadyIdleException;
+	abstract public void turnSilent() throws TerminalAlreadySilentException;
+	abstract public void turnBusy();
+	public void revert() {};
 
 	public boolean isOn() {
 		return true;

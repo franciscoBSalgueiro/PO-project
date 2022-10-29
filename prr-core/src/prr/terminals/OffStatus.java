@@ -1,5 +1,7 @@
 package prr.terminals;
 
+import prr.exceptions.TerminalAlreadyOffException;
+
 public class OffStatus extends TerminalStatus {
     public OffStatus(Terminal terminal) { super(terminal); }
 
@@ -19,14 +21,22 @@ public class OffStatus extends TerminalStatus {
     }
 
     @Override
-    public void turnOn() {
+    public void turnIdle() {
         getTerminal().setStatus(new IdleStatus(getTerminal()));
+    }
+
+    @Override
+    public void turnOff() throws TerminalAlreadyOffException {
+        throw new TerminalAlreadyOffException();
     }
 
     @Override
     public void turnSilent() {
         getTerminal().setStatus(new SilentStatus(getTerminal()));
     }
+
+    @Override
+    public void turnBusy() {}
 
     @Override
     public String toString() {

@@ -1,5 +1,7 @@
 package prr.terminals;
 
+import prr.exceptions.TerminalAlreadyIdleException;
+
 public class IdleStatus extends TerminalStatus {
     public IdleStatus(Terminal terminal) { super(terminal); }
 
@@ -16,6 +18,11 @@ public class IdleStatus extends TerminalStatus {
     @Override
     public void turnOff() {
         getTerminal().setStatus(new OffStatus(getTerminal()));
+    }
+
+    @Override
+    public void turnIdle() throws TerminalAlreadyIdleException {
+        throw new TerminalAlreadyIdleException();
     }
 
     @Override

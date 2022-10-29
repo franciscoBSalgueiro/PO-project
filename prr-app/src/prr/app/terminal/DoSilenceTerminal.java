@@ -15,6 +15,10 @@ class DoSilenceTerminal extends TerminalCommand {
 
 	@Override
 	protected final void execute() throws CommandException {
-        _receiver.silence();
+		try {
+			_receiver.silence();
+		} catch (Exception e) {
+			_display.popup(Message.alreadySilent());
+		}
 	}
 }
