@@ -122,8 +122,9 @@ public class Network implements Serializable {
 	public void registerFriends(String... fields) throws UnknownTerminalException {
 		try {
 			Terminal terminal = getTerminal(fields[1]);
-			for (int i = 2; i < fields.length; i++) {
-				terminal.addFriend(this, fields[i]);
+			String[] friends = fields[2].split(",");
+			for (String friend : friends) {
+				terminal.addFriend(this, friend);
 			}
 		} catch (UnknownTerminalException e) {
 			throw new UnknownTerminalException(e.getKey());
