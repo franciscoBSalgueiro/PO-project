@@ -96,7 +96,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
          *         it was the originator of this communication.
          **/
         public boolean canEndCurrentCommunication() {
-                return _status.canEndCurrentCommunication();
+                return _status.canEndCurrentCommunication() && _currentCommunication.getOrigin() == this;
         }
 
         /**
@@ -173,9 +173,11 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                         throw new DestinationIsOffException(destinationKey);
                 }
                 if (canStartCommunication()) {
-                        InteractiveCommunication communication = network.addInteractiveCommunication(this, destination, type);
+                        InteractiveCommunication communication = network.addInteractiveCommunication(this, destination,
+                                        type);
                         // FIXME probably there's a better way to do this
                         _currentCommunication = communication;
+                        destination._currentCommunication = communication;
                         _status.turnBusy();
                         destination._status.turnBusy();
                         _outComms.put(communication.getKey(), communication);
@@ -185,19 +187,33 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 }
         }
 
-        public long endCurrentCommunication(Network network, int duration) /* throws NoCurrentCommunicationException */ {
+        public long endCurrentCommunication(Network network,
+                        int duration) /* throws NoCurrentCommunicationException */ {
+                // FIXME: Bad implementation
                 _currentCommunication.end(duration);
                 long cost = _currentCommunication.calculateCost(_client);
-                setStatus(new IdleStatus(this));
-                _currentCommunication.getDestination().setStatus(new IdleStatus(_currentCommunication.getDestination()));
+                _status.revert();
+                _currentCommunication.getDestination()._status.revert();
+                _currentCommunication.getDestination()._currentCommunication = null;
                 _currentCommunication = null;
                 return cost;
-                
+
+        }
+
+        /**
+         * @return string of friends' keys comma separated
+         **/
+        private String renderFriends() {
+                String friends = "";
+                if (_friends.size() > 0) {
+                        friends += "|" + String.join(",", _friends.keySet());
+                }
+                return friends;
         }
 
         @Override
         public String toString() {
                 // terminalType|terminalId|clientId|terminalStatus|balance-paid|balance-debts|friend1,...,friend
-                return _key + "|" + _client.getKey() + "|" + _status + "|" + getPayments() + "|" + getDebts();
+                return _key + "|" + _client.getKey() + "|" + _status + "|" + getPayments() + "|" + getDebts() + renderFriends();
         }
 }

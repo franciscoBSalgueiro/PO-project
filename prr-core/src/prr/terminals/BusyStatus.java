@@ -12,8 +12,6 @@ public class BusyStatus extends TerminalStatus {
         return true;
     }
 
-    public boolean wasSilent() { return _silent; }
-
     @Override
     public boolean canEndCurrentCommunication() {
         return true;
@@ -32,6 +30,15 @@ public class BusyStatus extends TerminalStatus {
     @Override
     public void turnSilent() {
         getTerminal().setStatus(new SilentStatus(getTerminal()));
+    }
+
+    @Override
+    public void revert() {
+        if (_silent) {
+            getTerminal().setStatus(new SilentStatus(getTerminal()));
+        } else {
+            getTerminal().setStatus(new IdleStatus(getTerminal()));
+        }
     }
     
     @Override

@@ -22,6 +22,7 @@ public abstract class TerminalStatus implements Serializable {
 	public void turnOn() {}
 	public void turnSilent() {}
 	public void turnBusy() {}
+	public void revert() {}
 
 	public boolean isOn() {
 		return true;
