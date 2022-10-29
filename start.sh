@@ -4,5 +4,5 @@ if [ $# -eq 0 ]
 then
     java prr.app.App
 else
-    java -Dimport=./prr-tests-ei-daily/imports/$1.import prr.app.App
+    java -Dimport=./tests/imports/$1.import prr.app.App
 fi
