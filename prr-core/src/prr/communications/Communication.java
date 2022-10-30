@@ -16,6 +16,7 @@ abstract public class Communication implements Serializable /* FIXME maybe addd 
     private Terminal _origin;
     private Terminal _destination;
     private long _cost = 0;
+    private boolean _paid = false;
 
     Communication(int key, Terminal origin, Terminal destination) {
         _key = key;
@@ -31,6 +32,10 @@ abstract public class Communication implements Serializable /* FIXME maybe addd 
 
     public Terminal getDestination() {
         return _destination;
+    }
+
+    public boolean isPaid() {
+        return _paid;
     }
 
     abstract public long calculateCost(Client client);
