@@ -1,8 +1,10 @@
 package prr.terminals;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -21,6 +23,11 @@ import prr.exceptions.TerminalAlreadySilentException;
 import prr.exceptions.UnknownTerminalException;
 import prr.exceptions.UnsupportedAtDestinationException;
 import prr.exceptions.UnsupportedAtOriginException;
+import prr.notifications.BusyToIdle;
+import prr.notifications.Notification;
+import prr.notifications.Observer;
+import prr.notifications.OffNotification;
+import prr.notifications.SilentToIdle;
 
 /**
  * Abstract terminal.
@@ -36,6 +43,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         private Map<Integer, Communication> _inComms;
         private Map<Integer, Communication> _outComms;
         private InteractiveCommunication _currentCommunication;
+        private List<Observer> _observers;
 
         Terminal(String key, Client client) {
                 _key = key;
@@ -44,10 +52,22 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 _status = new IdleStatus(this);
                 _inComms = new TreeMap<Integer, Communication>();
                 _outComms = new TreeMap<Integer, Communication>();
+                _observers = new ArrayList<Observer>();
         }
 
         public String getKey() {
                 return _key;
+        }
+
+        public Client getClient() {
+                return _client;
+        }
+
+        public TerminalStatus getStatus() {
+                return _status;
+        }
+        public String getStatusString() {
+                return _status.toString();
         }
 
         public boolean isOn() {
@@ -72,6 +92,42 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                         total += c.getCost();
                 }
                 return total;
+        }
+
+        public void addNotification(Notification n) {
+                _client.addNotification(n);
+        }
+
+        public void addObserver(Observer o) {
+                _observers.add(o);
+        }
+
+        public void removeObserver(Observer o) {
+                _observers.remove(o);
+        }
+
+        public void notifyObservers() { //FIXME this is ugly
+                List<Observer> toRemove = new ArrayList<>();
+                for (Observer o: _observers) {
+                        o.update(this, getStatusString());
+                        if (o.hasSent()) toRemove.add(o);
+                }
+                for (Observer o: toRemove) removeObserver(o);
+        }
+
+        public void sendOffObserver(Terminal t) {
+                if (_client.activeNotifications())
+                        t.addObserver(new Observer(this, new OffNotification(t.getKey())));
+        }
+
+        public void sendBusyObserver(Terminal t) {
+                if (_client.activeNotifications())
+                        t.addObserver(new Observer(this, new BusyToIdle(t.getKey())));
+        }
+
+        public void sendSilentObserver(Terminal t) {
+                if (_client.activeNotifications())
+                        t.addObserver(new Observer(this, new SilentToIdle(t.getKey())));
         }
 
         abstract public boolean supportsVideoCommunications();
@@ -125,6 +181,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
 
         public void setStatus(TerminalStatus status) {
                 _status = status;
+                notifyObservers();
         }
 
         public void turnOff() throws TerminalAlreadyOffException {
@@ -142,7 +199,8 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         public void sendTextCommunication(Network network, String destinationKey, String message)
                         throws DestinationIsOffException, UnknownTerminalException {
                 Terminal destination = network.getTerminal(destinationKey);
-                if (!destination.isOn()) {
+                if (!destination.isOn()) { //TODO em todas as exceções tem de tar um create notif
+                        sendOffObserver(destination);
                         throw new DestinationIsOffException(destinationKey);
                 }
                 if (canStartCommunication()) {
@@ -168,7 +226,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                                 throw new UnsupportedAtDestinationException(destinationKey, type);
                         }
                 }
-                if (destination.isBusy()) {
+                if (destination.isBusy() || destinationKey.equals(_key)) {
                         throw new DestinationIsBusyException(destinationKey);
                 }
                 if (destination.isSilent()) {

@@ -21,6 +21,8 @@ class DoShowClient extends Command<Network> {
 		String clientId = stringField("clientId");
 		try {
 			_display.popup(_receiver.getClient(clientId));
+			_display.popup(_receiver.getNotifications(clientId));
+			_receiver.clearNotifications(clientId); //FIXME n sei se isto pode tar aqui tbh
 		} catch (UnknownClientException e) {
 			throw new UnknownClientKeyException(clientId);
 		}

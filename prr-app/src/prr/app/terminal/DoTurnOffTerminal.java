@@ -1,6 +1,7 @@
 package prr.app.terminal;
 
 import prr.Network;
+import prr.exceptions.TerminalAlreadyOffException;
 import prr.terminals.Terminal;
 import pt.tecnico.uilib.menus.CommandException;
 
@@ -17,7 +18,7 @@ class DoTurnOffTerminal extends TerminalCommand {
 	protected final void execute() throws CommandException {
 		try {
 			_receiver.turnOff();
-		} catch (Exception e) {
+		} catch (TerminalAlreadyOffException e) {
 			_display.popup(Message.alreadyOff());
 		}
 	}

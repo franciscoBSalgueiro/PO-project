@@ -29,6 +29,7 @@ import prr.exceptions.UnknownClientException;
 import prr.exceptions.UnknownTerminalException;
 import prr.exceptions.UnknownTerminalTypeException;
 import prr.exceptions.UnrecognizedEntryException;
+import prr.notifications.Notification;
 import prr.terminals.BasicTerminal;
 import prr.terminals.FancyTerminal;
 import prr.terminals.Terminal;
@@ -188,6 +189,16 @@ public class Network implements Serializable {
 			throw new UnknownTerminalException(key);
 		}
 		return _terminals.get(key);
+	}
+
+	public Collection<Notification> getNotifications(String key) throws UnknownClientException {
+		Client client = getClient(key);
+		return client.getAllNotifications();
+	}
+
+	public void clearNotifications(String key) throws UnknownClientException{
+		Client client = getClient(key);
+		client.clearNotifications();
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package prr.app.terminal;
 
 import prr.Network;
+import prr.exceptions.TerminalAlreadyIdleException;
 import prr.terminals.Terminal;
 import pt.tecnico.uilib.menus.CommandException;
 
@@ -17,7 +18,7 @@ class DoTurnOnTerminal extends TerminalCommand {
 	protected final void execute() throws CommandException {
 		try {
 			_receiver.turnOn();
-		} catch (Exception e) {
+		} catch (TerminalAlreadyIdleException e) {
 			_display.popup(Message.alreadyOn());
 		}
 	}

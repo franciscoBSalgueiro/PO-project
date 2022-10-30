@@ -3,14 +3,19 @@ package prr.clients;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import prr.communications.Communication;
 import prr.communications.TextCommunication;
 import prr.communications.VideoCommunication;
 import prr.communications.VoiceCommunication;
+import prr.exceptions.CommunicationAlreadyPaidException;
 import prr.exceptions.NotificationsAlreadyDisabledException;
 import prr.exceptions.NotificationsAlreadyEnabledException;
+import prr.notifications.Notification;
 import prr.terminals.Terminal;
 
 /**
@@ -25,7 +30,8 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
         private int _taxId;
         private ClientType _type;
         private List<Terminal> _terminals; // FIXME maybe change to a map
-        private boolean activeNotifications;
+        private boolean _activeNotifications;
+        private List<Notification> _notifications;
 
         public Client(String key, String name, int taxId) {
                 _key = key;
@@ -33,7 +39,8 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
                 _taxId = taxId;
                 _type = new NormalClient(this);
                 _terminals = new ArrayList<Terminal>();
-                activeNotifications = true;
+                _activeNotifications = true;
+                _notifications = new ArrayList<Notification>();
         }
 
         public int getCost(TextCommunication communication) {
@@ -52,22 +59,26 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
                 return _key;
         }
 
+        public boolean activeNotifications() {
+                return _activeNotifications;
+        }
+
         public void addTerminal(Terminal t) {
                 _terminals.add(t);
         }
 
         public void enableNotifications() throws NotificationsAlreadyEnabledException {
-                if (activeNotifications) {
+                if (_activeNotifications) {
                         throw new NotificationsAlreadyEnabledException();
                 }
-                activeNotifications = true;
+                _activeNotifications = true;
         }
 
         public void disableNotifications() throws NotificationsAlreadyDisabledException {
-                if (!activeNotifications) {
+                if (!_activeNotifications) {
                         throw new NotificationsAlreadyDisabledException();
                 }
-                activeNotifications = false;
+                _activeNotifications = false;
         }
 
         public long getPayments() {
@@ -100,11 +111,27 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
                 return communications;
         }
 
+        /* public void payComm(Terminal t, Communication c) throws CommunicationAlreadyPaidException {
+                getCost(c);
+        } */
+
+        public void addNotification(Notification n) {
+                _notifications.add(n);
+        }
+
+        public Collection<Notification> getAllNotifications() {
+                return Collections.unmodifiableCollection(_notifications);
+        }
+
+        public void clearNotifications() {
+                _notifications.clear();
+        }
+
         @Override
         public String toString() {
                 // CLIENT|key|name|taxId|type|notifications|terminals|payments|debts
                 return "CLIENT|" + _key + "|" + _name + "|" + _taxId + "|" + _type + "|"
-                                + (activeNotifications ? "YES" : "NO") + "|" + _terminals.size() + "|" + getPayments()
+                                + (_activeNotifications ? "YES" : "NO") + "|" + _terminals.size() + "|" + getPayments()
                                 + "|" + getDebts();
         }
 }

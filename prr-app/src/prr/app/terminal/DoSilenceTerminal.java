@@ -1,6 +1,7 @@
 package prr.app.terminal;
 
 import prr.Network;
+import prr.exceptions.TerminalAlreadySilentException;
 import prr.terminals.Terminal;
 import pt.tecnico.uilib.menus.CommandException;
 
@@ -17,7 +18,7 @@ class DoSilenceTerminal extends TerminalCommand {
 	protected final void execute() throws CommandException {
 		try {
 			_receiver.silence();
-		} catch (Exception e) {
+		} catch (TerminalAlreadySilentException e) {
 			_display.popup(Message.alreadySilent());
 		}
 	}
