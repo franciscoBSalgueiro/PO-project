@@ -41,9 +41,9 @@ public class BusyStatus extends TerminalStatus {
     @Override
     public void revert() {
         if (_silent) {
-            getTerminal().setStatus(new SilentStatus(getTerminal()));
+            turnSilent();
         } else {
-            getTerminal().setStatus(new IdleStatus(getTerminal()));
+            turnIdle();
         }
     }
     
