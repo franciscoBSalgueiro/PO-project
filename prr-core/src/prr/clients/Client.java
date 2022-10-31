@@ -14,6 +14,7 @@ import prr.communications.VoiceCommunication;
 import prr.exceptions.NotificationsAlreadyDisabledException;
 import prr.exceptions.NotificationsAlreadyEnabledException;
 import prr.notifications.Notification;
+import prr.notifications.NotificationDeliveryMethod;
 import prr.terminals.Terminal;
 
 /**
@@ -29,7 +30,8 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
         private ClientType _type;
         private Map<String, Terminal> _terminals;
         private boolean _activeNotifications;
-        private List<Notification> _notifications;
+        private List<Notification> _notifications = new ArrayList<>();
+        private NotificationDeliveryMethod _notificationDeliveryMethod = _notifications::add;
 
         public Client(String key, String name, int taxId) {
                 _key = key;
@@ -38,7 +40,6 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
                 _type = new NormalClient();
                 _terminals = new TreeMap<String, Terminal>();
                 _activeNotifications = true;
-                _notifications = new ArrayList<Notification>();
         }
 
         public int getCost(TextCommunication communication) {
@@ -117,7 +118,8 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
          */
 
         public void addNotification(Notification n) {
-                if (!_notifications.contains(n)) _notifications.add(n);
+                if (!_notifications.contains(n))
+                        _notificationDeliveryMethod.deliver(n);
         }
 
         public Collection<Notification> getAllNotifications() {
