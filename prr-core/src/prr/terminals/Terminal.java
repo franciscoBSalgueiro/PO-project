@@ -204,57 +204,63 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 _status.turnSilent();
         }
 
-        public void sendTextCommunication(Network network, String destinationKey, String message)
+        public void addCommunication(Communication c) {
+                if (c.getOrigin() == this) {
+                        _outComms.put(c.getKey(), c);
+                } else {
+                        _inComms.put(c.getKey(), c);
+                }
+        }
+
+        public void addCurrentCommunication(InteractiveCommunication comm) {
+                addCommunication(comm);
+                _currentCommunication = comm;
+                _status.turnBusy();
+        }
+
+        public void sendTextCommunication(Network network, String destKey, String msg)
                         throws DestinationIsOffException, UnknownTerminalException {
-                Terminal destination = network.getTerminal(destinationKey);
-                if (!destination.isOn()) { // TODO em todas as exceções tem de tar um create notif
-                        sendOffObserver(destination);
-                        throw new DestinationIsOffException(destinationKey);
+                Terminal dest = network.getTerminal(destKey);
+                if (!dest.isOn()) {
+                        sendOffObserver(dest);
+                        throw new DestinationIsOffException(destKey);
                 }
                 if (canStartCommunication()) {
-                        TextCommunication communication = network.addTextCommunication(this, _client, destination,
-                                        message);
-                        // FIXME probably there's a better way to do this
-                        _outComms.put(communication.getKey(), communication);
-                        destination._inComms.put(communication.getKey(), communication);
+                        TextCommunication comm = network.addTextCommunication(this, _client, dest, msg);
+                        addCommunication(comm);
+                        dest.addCommunication(comm);
                 } else {
                         // FIXME maybe throw an exception
                 }
         }
 
-        public void startInteractiveCommunication(Network network, String destinationKey, String type)
+        public void startInteractiveCommunication(Network network, String destKey, String type)
                         throws DestinationIsOffException, DestinationIsBusyException, DestinationIsSilentException,
                         UnknownTerminalException, UnsupportedAtOriginException, UnsupportedAtDestinationException {
-                Terminal destination = network.getTerminal(destinationKey);
+                Terminal dest = network.getTerminal(destKey);
                 if (type.equals("VIDEO")) {
                         if (!supportsVideoCommunications()) {
                                 throw new UnsupportedAtOriginException(_key, type);
                         }
-                        if (!destination.supportsVideoCommunications()) {
-                                throw new UnsupportedAtDestinationException(destinationKey, type);
+                        if (!dest.supportsVideoCommunications()) {
+                                throw new UnsupportedAtDestinationException(destKey, type);
                         }
                 }
-                if (destinationKey.equals(_key)) {
-                        throw new DestinationIsBusyException(destinationKey);
-                } else if (destination.isBusy()) {
-                        sendBusyObserver(destination);
-                        throw new DestinationIsBusyException(destinationKey);
-                } else if (destination.isSilent()) {
-                        sendSilentObserver(destination);
-                        throw new DestinationIsSilentException(destinationKey);
-                } else if (!destination.isOn()) {
-                        sendOffObserver(destination);
-                        throw new DestinationIsOffException(destinationKey);
+                if (destKey.equals(_key)) {
+                        throw new DestinationIsBusyException(destKey);
+                } else if (dest.isBusy()) {
+                        sendBusyObserver(dest);
+                        throw new DestinationIsBusyException(destKey);
+                } else if (dest.isSilent()) {
+                        sendSilentObserver(dest);
+                        throw new DestinationIsSilentException(destKey);
+                } else if (!dest.isOn()) {
+                        sendOffObserver(dest);
+                        throw new DestinationIsOffException(destKey);
                 } else if (canStartCommunication()) {
-                        InteractiveCommunication communication = network.addInteractiveCommunication(this, destination,
-                                        type);
-                        // FIXME probably there's a better way to do this
-                        _currentCommunication = communication;
-                        destination._currentCommunication = communication;
-                        _status.turnBusy();
-                        destination._status.turnBusy();
-                        _outComms.put(communication.getKey(), communication);
-                        destination._inComms.put(communication.getKey(), communication);
+                        InteractiveCommunication comm = network.addInteractiveCommunication(this, dest, type);
+                        addCurrentCommunication(comm);
+                        dest.addCurrentCommunication(comm);
                 } else {
                         // FIXME Add exception
                 }

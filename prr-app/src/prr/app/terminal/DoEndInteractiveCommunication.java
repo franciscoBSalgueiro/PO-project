@@ -25,6 +25,5 @@ class DoEndInteractiveCommunication extends TerminalCommand {
 			// never happens
 			e.printStackTrace();
 		}
-
 	}
 }
