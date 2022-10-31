@@ -193,9 +193,7 @@ public class Network implements Serializable {
 
 	public Collection<Notification> readNotifications(String key) throws UnknownClientException {
 		Client client = getClient(key);
-		Collection<Notification> notifications = client.getAllNotifications();
-		client.clearNotifications();
-		return notifications;
+		return Collections.unmodifiableCollection(client.getAllNotifications());
 	}
 
 	/**
@@ -205,11 +203,6 @@ public class Network implements Serializable {
 	 */
 	public Collection<Communication> getAllCommunications() {
 		return Collections.unmodifiableCollection(_communications.values());
-	}
-
-	public Communication getCommunication(int id) {
-		// FIXME add exception if communication does not exist
-		return _communications.get(id);
 	}
 
 	public TextCommunication addTextCommunication(Terminal origin, Client originClient, Terminal destination,

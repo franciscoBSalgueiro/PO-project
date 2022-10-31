@@ -3,7 +3,6 @@ package prr.clients;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -122,7 +121,9 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
         }
 
         public Collection<Notification> getAllNotifications() {
-                return Collections.unmodifiableCollection(_notifications);
+                Collection<Notification> notifications = new ArrayList<>(_notifications);
+                clearNotifications();
+                return notifications;
         }
 
         public void clearNotifications() {
