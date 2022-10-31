@@ -1,6 +1,7 @@
 package prr.app.terminal;
 
 import prr.Network;
+import prr.exceptions.NoCurrentCommunicationException;
 import prr.terminals.Terminal;
 import pt.tecnico.uilib.menus.CommandException;
 
@@ -17,8 +18,13 @@ class DoEndInteractiveCommunication extends TerminalCommand {
 	@Override
 	protected final void execute() throws CommandException {
 		int duration = integerField("duration");
-		long cost = _receiver.endCurrentCommunication(_network, duration);
-		_display.popup(Message.communicationCost(cost));
+		try {
+			long cost = _receiver.endCurrentCommunication(_network, duration);
+			_display.popup(Message.communicationCost(cost));
+		} catch (NoCurrentCommunicationException e) {
+			// never happens
+			e.printStackTrace();
+		}
 
 	}
 }
