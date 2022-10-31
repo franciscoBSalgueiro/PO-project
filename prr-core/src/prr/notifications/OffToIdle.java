@@ -8,6 +8,6 @@ public class OffToIdle extends Notification{
 
 	@Override
 	public String toString() {
-		return "O2I" + super.toString();
+		return "O2I|" + super.toString();
 	}
 }

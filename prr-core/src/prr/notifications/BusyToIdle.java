@@ -8,6 +8,6 @@ public class BusyToIdle extends Notification{
 
 	@Override
 	public String toString() {
-		return "B2I" + super.toString();
+		return "B2I|" + super.toString();
 	}
 }

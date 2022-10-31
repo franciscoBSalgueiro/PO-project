@@ -8,6 +8,6 @@ public class SilentToIdle extends Notification{
 
 	@Override
 	public String toString() {
-		return "B2I" + super.toString();
+		return "S2I|" + super.toString();
 	}
 }

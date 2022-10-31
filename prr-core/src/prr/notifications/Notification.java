@@ -20,6 +20,6 @@ public abstract class Notification {
 
 	@Override
 	public String toString() {
-		return "|" + _subjectKey;
+		return _subjectKey;
 	}
 }

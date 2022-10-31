@@ -8,6 +8,6 @@ public class OffToSilent extends Notification{
 
 	@Override
 	public String toString() {
-		return "O2S" + super.toString(); 
+		return "O2S|" + super.toString(); 
 	}
 }
