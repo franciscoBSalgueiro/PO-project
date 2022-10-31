@@ -10,6 +10,6 @@ public class SilentToIdle extends Notification{
 
 	@Override
 	public String toString() {
-		return "S2I" + super.toString();
+		return "S2I|" + super.toString();
 	}
 }
