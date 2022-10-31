@@ -10,16 +10,7 @@ import prr.plans.PaymentPlan;
 public abstract class ClientType implements Serializable {
     /** Serial number for serialization. */
     private static final long serialVersionUID = 202208091753L;
-    private Client _client;
     protected PaymentPlan _plan; // FIXME: maybe should be private?
-
-    public ClientType(Client c) {
-        _client = c;
-    }
-
-    public Client getClient() {
-        return _client;
-    }
 
     public int getTextCost(TextCommunication communication) {
         return _plan.getTextCost(communication);

@@ -3,8 +3,7 @@ package prr.clients;
 import prr.plans.NormalPaymentPlan;
 
 public class NormalClient extends ClientType {
-	public NormalClient(Client c) {
-		super(c);
+	public NormalClient() {
 		_plan = new NormalPaymentPlan();
 	}
 

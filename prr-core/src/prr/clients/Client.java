@@ -36,7 +36,7 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
                 _key = key;
                 _name = name;
                 _taxId = taxId;
-                _type = new NormalClient(this);
+                _type = new NormalClient();
                 _terminals = new TreeMap<String, Terminal>();
                 _activeNotifications = true;
                 _notifications = new ArrayList<Notification>();

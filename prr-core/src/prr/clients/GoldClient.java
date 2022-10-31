@@ -3,8 +3,7 @@ package prr.clients;
 import prr.plans.GoldPaymentPlan;
 
 public class GoldClient extends ClientType {
-    public GoldClient(Client c) {
-        super(c);
+    public GoldClient() {
         _plan = new GoldPaymentPlan();
     }
 

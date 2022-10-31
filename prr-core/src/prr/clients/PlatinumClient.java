@@ -3,8 +3,7 @@ package prr.clients;
 import prr.plans.PlatinumPaymentPlan;
 
 public class PlatinumClient extends ClientType {
-    public PlatinumClient(Client c) {
-        super(c);
+    public PlatinumClient() {
         _plan = new PlatinumPaymentPlan();
     }
 
