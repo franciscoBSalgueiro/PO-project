@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# number of tests passed
+RED='\033[1;31m'
+GREEN='\033[1;32m'
+NC="\033[0m" # No Color
 passed=0
 failed=0
 
@@ -14,16 +16,16 @@ for x in $1/*.in; do
     diff -cB -w ${x%.in}.out ${x%.in}.outhyp > ${x%.in}.diff ;
     if [ -s ${x%.in}.diff ]; then
         failed=$((failed+1))
-        echo "FAIL: $x. See file ${x%.in}.diff " ;
+        echo -e "${RED} FAIL: $x. See file ${x%.in}.diff ${NC}"
     else
         passed=$((passed+1))
-        echo "PASS: $x" ;
+        echo -e "${GREEN} PASS: $x ${NC}"
         rm -f ${x%.in}.diff ${x%.in}.outhyp ; 
     fi
 done
 
-echo "Passed: $passed"
-echo "Failed: $failed"
+echo -e "${GREEN} Passed ${NC}: $passed"
+echo -e "${RED} Failed ${NC}: $failed"
 
 #rm -f saved*
 
