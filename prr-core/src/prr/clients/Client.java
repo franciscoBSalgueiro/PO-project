@@ -12,7 +12,6 @@ import prr.communications.Communication;
 import prr.communications.TextCommunication;
 import prr.communications.VideoCommunication;
 import prr.communications.VoiceCommunication;
-import prr.exceptions.CommunicationAlreadyPaidException;
 import prr.exceptions.NotificationsAlreadyDisabledException;
 import prr.exceptions.NotificationsAlreadyEnabledException;
 import prr.notifications.Notification;
@@ -29,7 +28,7 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
         private String _name;
         private int _taxId;
         private ClientType _type;
-        private List<Terminal> _terminals; // FIXME maybe change to a map
+        private Map<String, Terminal> _terminals;
         private boolean _activeNotifications;
         private List<Notification> _notifications;
 
@@ -38,7 +37,7 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
                 _name = name;
                 _taxId = taxId;
                 _type = new NormalClient(this);
-                _terminals = new ArrayList<Terminal>();
+                _terminals = new TreeMap<String, Terminal>();
                 _activeNotifications = true;
                 _notifications = new ArrayList<Notification>();
         }
@@ -64,7 +63,7 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
         }
 
         public void addTerminal(Terminal t) {
-                _terminals.add(t);
+                _terminals.put(t.getKey(), t);
         }
 
         public void enableNotifications() throws NotificationsAlreadyEnabledException {
@@ -87,7 +86,7 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
 
         public long getDebts() {
                 long total = 0;
-                for (Terminal t : _terminals) {
+                for (Terminal t : _terminals.values()) {
                         total += t.getDebts();
                 }
                 return total;
@@ -96,7 +95,7 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
         public Collection<Communication> getInComms() {
                 // FIXME DM doesnt like lists
                 List<Communication> communications = new ArrayList<Communication>();
-                for (Terminal t : _terminals) {
+                for (Terminal t : _terminals.values()) {
                         communications.addAll(t.getInComms());
                 }
                 return communications;
@@ -105,15 +104,18 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
         public Collection<Communication> getOutComms() {
                 // FIXME DM doesnt like lists
                 List<Communication> communications = new ArrayList<Communication>();
-                for (Terminal t : _terminals) {
+                for (Terminal t : _terminals.values()) {
                         communications.addAll(t.getOutComms());
                 }
                 return communications;
         }
 
-        /* public void payComm(Terminal t, Communication c) throws CommunicationAlreadyPaidException {
-                getCost(c);
-        } */
+        /*
+         * public void payComm(Terminal t, Communication c) throws
+         * CommunicationAlreadyPaidException {
+         * getCost(c);
+         * }
+         */
 
         public void addNotification(Notification n) {
                 _notifications.add(n);

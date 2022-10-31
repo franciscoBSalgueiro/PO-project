@@ -218,7 +218,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                         throws DestinationIsOffException, DestinationIsBusyException, DestinationIsSilentException,
                         UnknownTerminalException, UnsupportedAtOriginException, UnsupportedAtDestinationException {
                 Terminal destination = network.getTerminal(destinationKey);
-                if (type == "VIDEO") {
+                if (type.equals("VIDEO")) {
                         if (!supportsVideoCommunications()) {
                                 throw new UnsupportedAtOriginException(_key, type);
                         }
