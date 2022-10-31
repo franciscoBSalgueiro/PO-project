@@ -226,16 +226,22 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                                 throw new UnsupportedAtDestinationException(destinationKey, type);
                         }
                 }
-                if (destination.isBusy() || destinationKey.equals(_key)) {
+                if (destinationKey.equals(_key)) {
                         throw new DestinationIsBusyException(destinationKey);
                 }
-                if (destination.isSilent()) {
+                else if (destination.isBusy()) {
+                        sendBusyObserver(destination);
+                        throw new DestinationIsBusyException(destinationKey);
+                }
+                else if (destination.isSilent()) {
+                        sendSilentObserver(destination);
                         throw new DestinationIsSilentException(destinationKey);
                 }
-                if (!destination.isOn()) {
+                else if (!destination.isOn()) {
+                        sendOffObserver(destination);
                         throw new DestinationIsOffException(destinationKey);
                 }
-                if (canStartCommunication()) {
+                else if (canStartCommunication()) {
                         InteractiveCommunication communication = network.addInteractiveCommunication(this, destination,
                                         type);
                         // FIXME probably there's a better way to do this
