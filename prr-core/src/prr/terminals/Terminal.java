@@ -66,6 +66,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         public TerminalStatus getStatus() {
                 return _status;
         }
+
         public String getStatusString() {
                 return _status.toString();
         }
@@ -106,13 +107,15 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 _observers.remove(o);
         }
 
-        public void notifyObservers() { //FIXME this is ugly
+        public void notifyObservers() { // FIXME this is ugly
                 List<Observer> toRemove = new ArrayList<>();
-                for (Observer o: _observers) {
+                for (Observer o : _observers) {
                         o.update(this, getStatusString());
-                        if (o.hasSent()) toRemove.add(o);
+                        if (o.hasSent())
+                                toRemove.add(o);
                 }
-                for (Observer o: toRemove) removeObserver(o);
+                for (Observer o : toRemove)
+                        removeObserver(o);
         }
 
         public void sendOffObserver(Terminal t) {
@@ -140,11 +143,16 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 return Collections.unmodifiableCollection(_inComms.values());
         }
 
-        public Communication getCurrentCommunication() throws NoCurrentCommunicationException {
+        public InteractiveCommunication getCurrentCommunication() throws NoCurrentCommunicationException {
                 if (_currentCommunication == null) {
                         throw new NoCurrentCommunicationException();
                 }
                 return _currentCommunication;
+        }
+
+        public void removeCurrentcommunication() {
+                _currentCommunication = null;
+                _status.revert();
         }
 
         /**
@@ -199,7 +207,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         public void sendTextCommunication(Network network, String destinationKey, String message)
                         throws DestinationIsOffException, UnknownTerminalException {
                 Terminal destination = network.getTerminal(destinationKey);
-                if (!destination.isOn()) { //TODO em todas as exceções tem de tar um create notif
+                if (!destination.isOn()) { // TODO em todas as exceções tem de tar um create notif
                         sendOffObserver(destination);
                         throw new DestinationIsOffException(destinationKey);
                 }
@@ -228,20 +236,16 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 }
                 if (destinationKey.equals(_key)) {
                         throw new DestinationIsBusyException(destinationKey);
-                }
-                else if (destination.isBusy()) {
+                } else if (destination.isBusy()) {
                         sendBusyObserver(destination);
                         throw new DestinationIsBusyException(destinationKey);
-                }
-                else if (destination.isSilent()) {
+                } else if (destination.isSilent()) {
                         sendSilentObserver(destination);
                         throw new DestinationIsSilentException(destinationKey);
-                }
-                else if (!destination.isOn()) {
+                } else if (!destination.isOn()) {
                         sendOffObserver(destination);
                         throw new DestinationIsOffException(destinationKey);
-                }
-                else if (canStartCommunication()) {
+                } else if (canStartCommunication()) {
                         InteractiveCommunication communication = network.addInteractiveCommunication(this, destination,
                                         type);
                         // FIXME probably there's a better way to do this
@@ -256,17 +260,14 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 }
         }
 
-        public long endCurrentCommunication(Network network,
-                        int duration) /* throws NoCurrentCommunicationException */ {
-                // FIXME: Bad implementation
-                _currentCommunication.end(duration);
-                long cost = _currentCommunication.calculateCost(_client);
-                _status.revert();
-                _currentCommunication.getDestination()._status.revert();
-                _currentCommunication.getDestination()._currentCommunication = null;
-                _currentCommunication = null;
+        public long endCurrentCommunication(Network network, int duration) throws NoCurrentCommunicationException {
+                Terminal destination = _currentCommunication.getDestination();
+                InteractiveCommunication current = getCurrentCommunication();
+                current.end(duration);
+                long cost = current.calculateCost(_client);
+                removeCurrentcommunication();
+                destination.removeCurrentcommunication();
                 return cost;
-
         }
 
         /**
@@ -283,6 +284,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         @Override
         public String toString() {
                 // terminalType|terminalId|clientId|terminalStatus|balance-paid|balance-debts|friend1,...,friend
-                return _key + "|" + _client.getKey() + "|" + _status + "|" + getPayments() + "|" + getDebts() + renderFriends();
+                return _key + "|" + _client.getKey() + "|" + _status + "|" + getPayments() + "|" + getDebts()
+                                + renderFriends();
         }
 }
