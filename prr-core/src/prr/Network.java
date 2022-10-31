@@ -191,16 +191,11 @@ public class Network implements Serializable {
 		return _terminals.get(key);
 	}
 
-	public Collection<Notification> getNotifications(String key) throws UnknownClientException {
+	public Collection<Notification> readNotifications(String key) throws UnknownClientException {
 		Client client = getClient(key);
 		Collection<Notification> notifications = client.getAllNotifications();
 		client.clearNotifications();
 		return notifications;
-	}
-
-	public void clearNotifications(String key) throws UnknownClientException{
-		Client client = getClient(key);
-		client.clearNotifications();
 	}
 
 	/**
