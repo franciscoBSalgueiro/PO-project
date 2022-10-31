@@ -1,13 +1,15 @@
 package prr.notifications;
 
+import prr.terminals.Terminal;
+
 public class SilentToIdle extends Notification{
 	
-	public SilentToIdle(String key) {
-		super(key);
+	public SilentToIdle(Terminal t) {
+		super(t);
 	}
 
 	@Override
 	public String toString() {
-		return "S2I|" + super.toString();
+		return "S2I" + super.toString();
 	}
 }

@@ -1,9 +1,11 @@
 package prr.notifications;
 
+import prr.terminals.Terminal;
+
 public class OffToSilent extends Notification{
 	
-	public OffToSilent(String key) {
-		super(key);
+	public OffToSilent(Terminal t) {
+		super(t);
 	}
 
 	@Override

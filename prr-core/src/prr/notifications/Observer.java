@@ -1,5 +1,6 @@
 package prr.notifications;
 
+import prr.clients.Client;
 import prr.terminals.Terminal;
 
 /* TODO métodos de delivery (wtf are they even for tho, mfw mando um pombo para casa do DM) */
@@ -10,6 +11,10 @@ public class Observer {
 	public Observer(Terminal subscriber, Notification notif) {
 		_subscriber = subscriber;
 		_notif = notif;
+	}
+
+	public Client getClient() {
+		return _subscriber.getClient();
 	}
 
 	public void update(Terminal subject, String status) {

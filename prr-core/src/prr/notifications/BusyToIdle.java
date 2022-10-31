@@ -1,9 +1,11 @@
 package prr.notifications;
 
+import prr.terminals.Terminal;
+
 public class BusyToIdle extends Notification{
 	
-	public BusyToIdle(String key) {
-		super(key);
+	public BusyToIdle(Terminal t) {
+		super(t);
 	}
 
 	@Override

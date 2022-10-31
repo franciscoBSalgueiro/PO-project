@@ -117,17 +117,17 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
 
         public void sendOffObserver(Terminal t) {
                 if (_client.activeNotifications())
-                        t.addObserver(new Observer(this, new OffNotification(t.getKey())));
+                        t.addObserver(new Observer(this, new OffNotification(t)));
         }
 
         public void sendBusyObserver(Terminal t) {
                 if (_client.activeNotifications())
-                        t.addObserver(new Observer(this, new BusyToIdle(t.getKey())));
+                        t.addObserver(new Observer(this, new BusyToIdle(t)));
         }
 
         public void sendSilentObserver(Terminal t) {
                 if (_client.activeNotifications())
-                        t.addObserver(new Observer(this, new SilentToIdle(t.getKey())));
+                        t.addObserver(new Observer(this, new SilentToIdle(t)));
         }
 
         abstract public boolean supportsVideoCommunications();

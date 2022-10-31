@@ -118,7 +118,7 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
          */
 
         public void addNotification(Notification n) {
-                _notifications.add(n);
+                if (!_notifications.contains(n)) _notifications.add(n);
         }
 
         public Collection<Notification> getAllNotifications() {
