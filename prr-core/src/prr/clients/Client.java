@@ -15,12 +15,13 @@ import prr.exceptions.NotificationsAlreadyDisabledException;
 import prr.exceptions.NotificationsAlreadyEnabledException;
 import prr.notifications.Notification;
 import prr.notifications.NotificationDeliveryMethod;
+import prr.notifications.Observer;
 import prr.terminals.Terminal;
 
 /**
  * Abstract client.
  */
-public class Client implements Serializable /* FIXME maybe addd more interfaces */ {
+public class Client implements Serializable, Observer /* FIXME maybe addd more interfaces */ {
         /** Serial number for serialization. */
         private static final long serialVersionUID = 202208091753L;
 
@@ -40,6 +41,17 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
                 _type = new NormalClient();
                 _terminals = new TreeMap<String, Terminal>();
                 _activeNotifications = true;
+        }
+
+        public Client(String key, String name, int taxId, NotificationDeliveryMethod delivery) {
+                _key = key;
+                _name = name;
+                _taxId = taxId;
+                _type = new NormalClient();
+                _terminals = new TreeMap<String, Terminal>();
+                _activeNotifications = true;
+                _notifications = new ArrayList<Notification>();
+                _notificationDeliveryMethod = delivery;
         }
 
         public int getCost(TextCommunication communication) {
@@ -130,6 +142,10 @@ public class Client implements Serializable /* FIXME maybe addd more interfaces 
 
         public void clearNotifications() {
                 _notifications.clear();
+        }
+
+        public void update(Notification n) {
+                addNotification(n);
         }
 
         @Override

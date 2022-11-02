@@ -15,26 +15,6 @@ public abstract class Notification {
 		return _subject.getKey();
 	}
 
-	public Client getClient() {
-		return _subject.getClient();
-	}
-
-	public boolean canSend(String status) {
-		return status.equals("IDLE");
-	}
-
-	public void send(Terminal subscriber) {
-		subscriber.addNotification(this);
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof Notification n) {
-			return getClient() == n.getClient();
-		}
-		return false;
-	}
-
 	@Override
 	public String toString() {
 		return getSubjectKey();

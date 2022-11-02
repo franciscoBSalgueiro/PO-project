@@ -1,6 +1,7 @@
 package prr.terminals;
 
 import prr.exceptions.TerminalAlreadySilentException;
+import prr.notifications.SilentToIdle;
 
 public class SilentStatus extends TerminalStatus {
     public SilentStatus(Terminal terminal) { super(terminal); }
@@ -18,6 +19,7 @@ public class SilentStatus extends TerminalStatus {
     @Override
     public void turnIdle() {
         getTerminal().setStatus(new IdleStatus(getTerminal()));
+        sendNotification(new SilentToIdle(getTerminal()));
     }
 
     @Override

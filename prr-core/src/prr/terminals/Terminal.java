@@ -26,7 +26,6 @@ import prr.exceptions.UnsupportedAtOriginException;
 import prr.notifications.BusyToIdle;
 import prr.notifications.Notification;
 import prr.notifications.Observer;
-import prr.notifications.OffNotification;
 import prr.notifications.SilentToIdle;
 
 /**
@@ -44,6 +43,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         private Map<Integer, Communication> _outComms;
         private InteractiveCommunication _currentCommunication;
         private List<Observer> _observers;
+        private List<Observer> _textObservers;
 
         Terminal(String key, Client client) {
                 _key = key;
@@ -53,6 +53,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 _inComms = new TreeMap<Integer, Communication>();
                 _outComms = new TreeMap<Integer, Communication>();
                 _observers = new ArrayList<Observer>();
+                _textObservers = new ArrayList<Observer>();
         }
 
         public String getKey() {
@@ -66,7 +67,6 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         public TerminalStatus getStatus() {
                 return _status;
         }
-
         public String getStatusString() {
                 return _status.toString();
         }
@@ -95,42 +95,37 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 return total;
         }
 
-        public void addNotification(Notification n) {
-                _client.addNotification(n);
+        public void addTextObserver(Observer o) {
+                if (!_textObservers.contains(o)) {
+                        _observers.add(o);
+                        _textObservers.add(o);
+                }
         }
 
-        public void addObserver(Observer o) {
-                _observers.add(o);
+        public void addInteractiveObserver(Observer o) {
+                if (!_observers.contains(o) || (_observers.contains(o) && _textObservers.contains(o))) _observers.add(o);
         }
 
-        public void removeObserver(Observer o) {
+        public void removeTextObserver(Observer o) {
+                _observers.remove(o);
+                _textObservers.remove(o);
+        }
+
+        public void removeInteractiveObserver(Observer o) {
                 _observers.remove(o);
         }
 
-        public void notifyObservers() { // FIXME this is ugly
-                List<Observer> toRemove = new ArrayList<>();
-                for (Observer o : _observers) {
-                        o.update(this, getStatusString());
-                        if (o.hasSent())
-                                toRemove.add(o);
+        public void notifyAllObservers(Notification n) {
+                for (Observer o: _observers) o.update(n);
+                _observers.clear();
+        }
+
+        public void notifyTextObservers(Notification n) {
+                for (Observer o: _textObservers) {
+                        o.update(n);
+                        _observers.remove(o);
                 }
-                for (Observer o : toRemove)
-                        removeObserver(o);
-        }
-
-        public void sendOffObserver(Terminal t) {
-                if (_client.activeNotifications())
-                        t.addObserver(new Observer(this, new OffNotification(t)));
-        }
-
-        public void sendBusyObserver(Terminal t) {
-                if (_client.activeNotifications())
-                        t.addObserver(new Observer(this, new BusyToIdle(t)));
-        }
-
-        public void sendSilentObserver(Terminal t) {
-                if (_client.activeNotifications())
-                        t.addObserver(new Observer(this, new SilentToIdle(t)));
+                _textObservers.clear();
         }
 
         abstract public boolean supportsVideoCommunications();
@@ -189,7 +184,6 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
 
         public void setStatus(TerminalStatus status) {
                 _status = status;
-                notifyObservers();
         }
 
         public void turnOff() throws TerminalAlreadyOffException {
@@ -221,8 +215,8 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         public void sendTextCommunication(Network network, String destKey, String msg)
                         throws DestinationIsOffException, UnknownTerminalException {
                 Terminal dest = network.getTerminal(destKey);
-                if (!dest.isOn()) {
-                        sendOffObserver(dest);
+                if (!dest.isOn()) { //TODO em todas as exceções tem de tar um create notif
+                        dest.addTextObserver(_client);
                         throw new DestinationIsOffException(destKey);
                 }
                 if (canStartCommunication()) {
@@ -249,13 +243,13 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 if (destKey.equals(_key)) {
                         throw new DestinationIsBusyException(destKey);
                 } else if (dest.isBusy()) {
-                        sendBusyObserver(dest);
+                        dest.addInteractiveObserver(_client);
                         throw new DestinationIsBusyException(destKey);
                 } else if (dest.isSilent()) {
-                        sendSilentObserver(dest);
+                        dest.addInteractiveObserver(_client);
                         throw new DestinationIsSilentException(destKey);
                 } else if (!dest.isOn()) {
-                        sendOffObserver(dest);
+                        dest.addInteractiveObserver(_client);
                         throw new DestinationIsOffException(destKey);
                 } else if (canStartCommunication()) {
                         InteractiveCommunication comm = network.addInteractiveCommunication(this, dest, type);

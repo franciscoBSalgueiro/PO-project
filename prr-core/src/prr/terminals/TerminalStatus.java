@@ -5,6 +5,7 @@ import java.io.Serializable;
 import prr.exceptions.TerminalAlreadyIdleException;
 import prr.exceptions.TerminalAlreadyOffException;
 import prr.exceptions.TerminalAlreadySilentException;
+import prr.notifications.Notification;
 
 /**
  * Abstract terminal status. Possible status are Idle or Off.
@@ -38,6 +39,14 @@ public abstract class TerminalStatus implements Serializable {
 
 	public boolean isSilent() {
 		return false;
+	}
+
+	public void sendNotification(Notification n) {
+		_terminal.notifyAllObservers(n);
+	}
+
+	public void sendTextNotification(Notification n) {
+		_terminal.notifyTextObservers(n);
 	}
 
 	@Override

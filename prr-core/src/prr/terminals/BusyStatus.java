@@ -1,5 +1,7 @@
 package prr.terminals;
 
+import prr.notifications.BusyToIdle;
+
 public class BusyStatus extends TerminalStatus {
     private boolean _silent;
     public BusyStatus(Terminal terminal, boolean silent) {
@@ -25,6 +27,7 @@ public class BusyStatus extends TerminalStatus {
     @Override
     public void turnIdle() {
         getTerminal().setStatus(new IdleStatus(getTerminal()));
+        sendNotification(new BusyToIdle(getTerminal()));
     }
 
     @Override
