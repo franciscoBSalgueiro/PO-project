@@ -5,7 +5,11 @@ import prr.notifications.OffToIdle;
 import prr.notifications.OffToSilent;
 
 public class OffStatus extends TerminalStatus {
-    public OffStatus(Terminal terminal) { super(terminal); }
+    public OffStatus(Terminal terminal,
+            long debt,
+            long payments) {
+        super(terminal, debt, payments);
+    }
 
     @Override
     public boolean canEndCurrentCommunication() {
@@ -24,7 +28,7 @@ public class OffStatus extends TerminalStatus {
 
     @Override
     public void turnIdle() {
-        getTerminal().setStatus(new IdleStatus(getTerminal()));
+        getTerminal().setStatus(new IdleStatus(getTerminal(), getDebt(), getPayments()));
         sendNotification(new OffToIdle(getTerminal()));
     }
 
@@ -35,12 +39,13 @@ public class OffStatus extends TerminalStatus {
 
     @Override
     public void turnSilent() {
-        getTerminal().setStatus(new SilentStatus(getTerminal()));
+        getTerminal().setStatus(new SilentStatus(getTerminal(), getDebt(), getPayments()));
         sendTextNotification(new OffToSilent(getTerminal()));
     }
 
     @Override
-    public void turnBusy() {}
+    public void turnBusy() {
+    }
 
     @Override
     public String toString() {

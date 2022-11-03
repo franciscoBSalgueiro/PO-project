@@ -48,6 +48,10 @@ abstract public class Communication implements Serializable /* FIXME maybe addd 
         _cost = cost;
     }
 
+    public void pay() {
+        _paid = true;
+    }
+
     abstract int getUnits();
     abstract String getStatus();
 

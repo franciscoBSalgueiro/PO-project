@@ -28,6 +28,8 @@ public class TextCommunication extends Communication {
 
     @Override
     public long calculateCost(Client client) {
-        return client.getCost(this);
+        long cost = client.getCost(this);
+        setCost(cost);
+        return cost;
     }
 }

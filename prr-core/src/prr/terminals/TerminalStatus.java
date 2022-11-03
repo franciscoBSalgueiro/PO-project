@@ -13,21 +13,35 @@ import prr.notifications.Notification;
 public abstract class TerminalStatus implements Serializable {
 	/** Serial number for serialization. */
 	private static final long serialVersionUID = 202208091753L;
-	
+	private long _debt;
+	private long _payments;
+
 	private Terminal _terminal;
 
-	public TerminalStatus(Terminal terminal) { _terminal = terminal; }
+	public TerminalStatus(Terminal terminal, long debt, long payments) {
+		_terminal = terminal;
+		_debt = debt;
+		_payments = payments;
+	}
 
-	public Terminal getTerminal() { return _terminal; }
+	public Terminal getTerminal() {
+		return _terminal;
+	}
 
 	abstract public boolean canEndCurrentCommunication();
+
 	abstract public boolean canStartCommunication();
 
 	abstract public void turnOff() throws TerminalAlreadyOffException;
+
 	abstract public void turnIdle() throws TerminalAlreadyIdleException;
+
 	abstract public void turnSilent() throws TerminalAlreadySilentException;
+
 	abstract public void turnBusy();
-	public void revert() {};
+
+	public void revert() {
+	};
 
 	public boolean isOn() {
 		return true;
@@ -47,6 +61,23 @@ public abstract class TerminalStatus implements Serializable {
 
 	public void sendTextNotification(Notification n) {
 		_terminal.notifyTextObservers(n);
+	}
+
+	public long getDebt() {
+		return _debt;
+	}
+
+	public long getPayments() {
+		return _payments;
+	}
+
+	public void addDebt(long debt) {
+		_debt += debt;
+	}
+
+	public void addPayment(long payment) {
+		_debt -= payment;
+		_payments += payment;
 	}
 
 	@Override

@@ -3,7 +3,11 @@ package prr.terminals;
 import prr.exceptions.TerminalAlreadyIdleException;
 
 public class IdleStatus extends TerminalStatus {
-    public IdleStatus(Terminal terminal) { super(terminal); }
+    public IdleStatus(Terminal terminal,
+            long debt,
+            long payments) {
+        super(terminal, debt, payments);
+    }
 
     @Override
     public boolean canEndCurrentCommunication() {
@@ -17,7 +21,7 @@ public class IdleStatus extends TerminalStatus {
 
     @Override
     public void turnOff() {
-        getTerminal().setStatus(new OffStatus(getTerminal()));
+        getTerminal().setStatus(new OffStatus(getTerminal(), getDebt(), getPayments()));
     }
 
     @Override
@@ -27,12 +31,12 @@ public class IdleStatus extends TerminalStatus {
 
     @Override
     public void turnSilent() {
-        getTerminal().setStatus(new SilentStatus(getTerminal()));
+        getTerminal().setStatus(new SilentStatus(getTerminal(), getDebt(), getPayments()));
     }
 
     @Override
     public void turnBusy() {
-        getTerminal().setStatus(new BusyStatus(getTerminal(), false));
+        getTerminal().setStatus(new BusyStatus(getTerminal(), getDebt(), getPayments(), false));
     }
 
     @Override

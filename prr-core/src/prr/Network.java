@@ -209,8 +209,7 @@ public class Network implements Serializable {
 			String message) {
 		int key = getUUID();
 		TextCommunication communication = new TextCommunication(key, origin, destination, message);
-		long cost = originClient.getCost(communication);
-		communication.setCost(cost);
+		communication.calculateCost(originClient);
 		_communications.put(key, communication);
 		return communication;
 	}

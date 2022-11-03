@@ -4,7 +4,11 @@ import prr.exceptions.TerminalAlreadySilentException;
 import prr.notifications.SilentToIdle;
 
 public class SilentStatus extends TerminalStatus {
-    public SilentStatus(Terminal terminal) { super(terminal); }
+    public SilentStatus(Terminal terminal,
+            long debt,
+            long payments) {
+        super(terminal, debt, payments);
+    }
 
     @Override
     public boolean canEndCurrentCommunication() {
@@ -18,13 +22,13 @@ public class SilentStatus extends TerminalStatus {
 
     @Override
     public void turnIdle() {
-        getTerminal().setStatus(new IdleStatus(getTerminal()));
+        getTerminal().setStatus(new IdleStatus(getTerminal(), getDebt(), getPayments()));
         sendNotification(new SilentToIdle(getTerminal()));
     }
 
     @Override
     public void turnOff() {
-        getTerminal().setStatus(new OffStatus(getTerminal()));
+        getTerminal().setStatus(new OffStatus(getTerminal(), getDebt(), getPayments()));
     }
 
     @Override
@@ -34,7 +38,7 @@ public class SilentStatus extends TerminalStatus {
 
     @Override
     public void turnBusy() {
-        getTerminal().setStatus(new BusyStatus(getTerminal(), true));
+        getTerminal().setStatus(new BusyStatus(getTerminal(), getDebt(), getPayments(), true));
     }
 
     @Override

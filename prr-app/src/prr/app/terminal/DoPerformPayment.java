@@ -1,7 +1,7 @@
 package prr.app.terminal;
 
 import prr.Network;
-import prr.exceptions.NoCurrentCommunicationException;
+import prr.exceptions.InvalidCommunicationException;
 import prr.terminals.Terminal;
 import pt.tecnico.uilib.menus.CommandException;
 // Add more imports if needed
@@ -20,10 +20,9 @@ class DoPerformPayment extends TerminalCommand {
 	protected final void execute() throws CommandException {
         int key = integerField("key");
 		try {
-			_receiver.getCurrentCommunication();
-			//FIXME implement command
+			_receiver.performPayment(key);
 
-		} catch (NoCurrentCommunicationException e) {
+		} catch (InvalidCommunicationException e) {
 			_display.popup(Message.invalidCommunication());
 		}
 	}

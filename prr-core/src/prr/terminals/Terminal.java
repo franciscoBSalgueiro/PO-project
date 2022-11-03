@@ -16,6 +16,7 @@ import prr.communications.TextCommunication;
 import prr.exceptions.DestinationIsBusyException;
 import prr.exceptions.DestinationIsOffException;
 import prr.exceptions.DestinationIsSilentException;
+import prr.exceptions.InvalidCommunicationException;
 import prr.exceptions.NoCurrentCommunicationException;
 import prr.exceptions.TerminalAlreadyIdleException;
 import prr.exceptions.TerminalAlreadyOffException;
@@ -49,7 +50,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 _key = key;
                 _friends = new TreeMap<String, Terminal>();
                 _client = client;
-                _status = new IdleStatus(this);
+                _status = new IdleStatus(this, 0, 0);
                 _inComms = new TreeMap<Integer, Communication>();
                 _outComms = new TreeMap<Integer, Communication>();
                 _observers = new ArrayList<Observer>();
@@ -84,15 +85,11 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         }
 
         public long getPayments() {
-                return 0;
+                return _status.getPayments();
         }
 
         public long getDebts() {
-                long total = 0;
-                for (Communication c : _outComms.values()) {
-                        total += c.getCost();
-                }
-                return total;
+                return _status.getDebt();
         }
 
         public void addTextObserver(Observer o) {
@@ -148,6 +145,15 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         public void removeCurrentcommunication() {
                 _currentCommunication = null;
                 _status.revert();
+        }
+
+        public void performPayment(int key) throws InvalidCommunicationException {
+                Communication c = _outComms.get(key);
+                if (c == null || c.isPaid() || c == _currentCommunication) {
+                        throw new InvalidCommunicationException(key);
+                }
+                c.pay();
+                _status.addPayment(c.getCost());
         }
 
         /**
@@ -222,6 +228,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 if (canStartCommunication()) {
                         TextCommunication comm = network.addTextCommunication(this, _client, dest, msg);
                         addCommunication(comm);
+                        _status.addDebt(comm.getCost());
                         dest.addCommunication(comm);
                 } else {
                         // FIXME maybe throw an exception
@@ -265,6 +272,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 InteractiveCommunication current = getCurrentCommunication();
                 current.end(duration);
                 long cost = current.calculateCost(_client);
+                _status.addDebt(cost);
                 removeCurrentcommunication();
                 destination.removeCurrentcommunication();
                 return cost;

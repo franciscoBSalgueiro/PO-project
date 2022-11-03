@@ -93,7 +93,11 @@ public class Client implements Serializable, Observer /* FIXME maybe addd more i
         }
 
         public long getPayments() {
-                return 0;
+                long total = 0;
+                for (Terminal t : _terminals.values()) {
+                        total += t.getPayments();
+                }
+                return total;
         }
 
         public long getDebts() {
@@ -105,21 +109,19 @@ public class Client implements Serializable, Observer /* FIXME maybe addd more i
         }
 
         public Collection<Communication> getInComms() {
-                // FIXME DM doesnt like lists
-                List<Communication> communications = new ArrayList<Communication>();
+                List<Communication> comms = new ArrayList<>();
                 for (Terminal t : _terminals.values()) {
-                        communications.addAll(t.getInComms());
+                        comms.addAll(t.getInComms());
                 }
-                return communications;
+                return comms;
         }
 
         public Collection<Communication> getOutComms() {
-                // FIXME DM doesnt like lists
-                List<Communication> communications = new ArrayList<Communication>();
+                List<Communication> comms = new ArrayList<>();
                 for (Terminal t : _terminals.values()) {
-                        communications.addAll(t.getOutComms());
+                        comms.addAll(t.getOutComms());
                 }
-                return communications;
+                return comms;
         }
 
         /*
