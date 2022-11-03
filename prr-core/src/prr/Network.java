@@ -159,6 +159,24 @@ public class Network implements Serializable {
 		return client;
 	}
 
+	public long getClientPayments(String key) throws UnknownClientException {
+		Client client = _clients.get(key);
+		return client.getPayments();
+	}
+
+	public long getClientDebts(String key) throws UnknownClientException {
+		Client client = _clients.get(key);
+		return client.getDebts();
+	}
+
+	public Collection<Client> getClientsWithDebt() { /* FIXME what was that email about? */
+		return _clients.values().stream().filter(c -> c.getDebts() > 0).collect(Collectors.toList());
+	}
+
+	public Collection<Client> getClientsWithoutDebt() { /* FIXME what was that email about? */
+		return _clients.values().stream().filter(c -> c.getDebts() == 0).collect(Collectors.toList());
+	}
+
 	/**
 	 * Return all the terminals as an unmodifiable collection.
 	 * 
@@ -176,6 +194,10 @@ public class Network implements Serializable {
 	 */
 	public Collection<Terminal> getUnusedTerminals() {
 		return _terminals.values().stream().filter(t -> t.getInComms().size() == 0).collect(Collectors.toList());
+	}
+
+	public Collection<Terminal> getTerminalsWithPositiveBalance() { /* FIXME balance function */
+		return _terminals.values().stream().filter(t -> t.getDebts() < t.getPayments()).collect(Collectors.toList());
 	}
 
 	/**

@@ -93,14 +93,12 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         }
 
         public void addTextObserver(Observer o) {
-                if (!_textObservers.contains(o)) {
-                        _observers.add(o);
-                        _textObservers.add(o);
-                }
+                _observers.add(o);
+                _textObservers.add(o);
         }
 
         public void addInteractiveObserver(Observer o) {
-                if (!_observers.contains(o) || (_observers.contains(o) && _textObservers.contains(o))) _observers.add(o);
+                _observers.add(o);
         }
 
         public void removeTextObserver(Observer o) {
