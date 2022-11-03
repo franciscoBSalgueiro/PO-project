@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -26,6 +28,7 @@ import prr.exceptions.TerminalAlreadyIdleException;
 import prr.exceptions.TerminalAlreadyOffException;
 import prr.exceptions.TerminalAlreadySilentException;
 import prr.exceptions.UnknownClientException;
+import prr.exceptions.UnknownCommunicationTypeException;
 import prr.exceptions.UnknownTerminalException;
 import prr.exceptions.UnknownTerminalTypeException;
 import prr.exceptions.UnrecognizedEntryException;
@@ -134,7 +137,6 @@ public class Network implements Serializable {
 		} catch (UnknownTerminalException e) {
 			throw new UnknownTerminalException(e.getKey());
 		}
-
 	}
 
 	/**
@@ -166,7 +168,8 @@ public class Network implements Serializable {
 
 	public long getGlobalPayments() {
 		long payments = 0;
-		for (Client c: _clients.values()) payments += c.getPayments();
+		for (Client c : _clients.values())
+			payments += c.getPayments();
 		return payments;
 	}
 
@@ -177,16 +180,29 @@ public class Network implements Serializable {
 
 	public long getGlobalDebts() {
 		long debts = 0;
-		for (Client c: _clients.values()) debts += c.getDebts();
+		for (Client c : _clients.values())
+			debts += c.getDebts();
 		return debts;
 	}
 
-	public Collection<Client> getClientsWithDebt() { /* FIXME what was that email about? */
-		return _clients.values().stream().filter(c -> c.getDebts() > 0).collect(Collectors.toList());
+	public Collection<Client> getClientsWithDebt() {
+		// FIXME repeated code
+		List<Client> clients = new ArrayList<>();
+		for (Client c : _clients.values())
+			if (c.getDebts() > 0)
+				clients.add(c);
+		Collections.sort(clients);
+		return clients;
 	}
 
-	public Collection<Client> getClientsWithoutDebt() { /* FIXME what was that email about? */
-		return _clients.values().stream().filter(c -> c.getDebts() == 0).collect(Collectors.toList());
+	public Collection<Client> getClientsWithoutDebt() {
+		// FIXME repeated code
+		List<Client> clients = new ArrayList<>();
+		for (Client c : _clients.values())
+			if (c.getDebts() == 0)
+				clients.add(c);
+		Collections.sort(clients);
+		return clients;
 	}
 
 	/**
@@ -248,7 +264,8 @@ public class Network implements Serializable {
 		return communication;
 	}
 
-	public InteractiveCommunication addInteractiveCommunication(Terminal origin, Terminal destination, String type) {
+	public InteractiveCommunication addInteractiveCommunication(Terminal origin, Terminal destination, String type)
+			throws UnknownCommunicationTypeException {
 		InteractiveCommunication communication;
 		int key = getUUID();
 		switch (type) {
@@ -258,8 +275,7 @@ public class Network implements Serializable {
 			case "VIDEO" -> {
 				communication = new VideoCommunication(key, origin, destination);
 			}
-			// FIXME add real exception
-			default -> throw new IllegalArgumentException("Unknown communication type: " + type);
+			default -> throw new UnknownCommunicationTypeException(type);
 		}
 		_communications.put(key, communication);
 		return communication;

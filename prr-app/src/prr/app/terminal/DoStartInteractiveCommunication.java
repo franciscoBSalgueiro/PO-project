@@ -5,6 +5,8 @@ import prr.app.exceptions.UnknownTerminalKeyException;
 import prr.exceptions.DestinationIsBusyException;
 import prr.exceptions.DestinationIsOffException;
 import prr.exceptions.DestinationIsSilentException;
+import prr.exceptions.UnavailableTerminalException;
+import prr.exceptions.UnknownCommunicationTypeException;
 import prr.exceptions.UnknownTerminalException;
 import prr.exceptions.UnsupportedAtDestinationException;
 import prr.exceptions.UnsupportedAtOriginException;
@@ -40,6 +42,9 @@ class DoStartInteractiveCommunication extends TerminalCommand {
 			_display.popup(Message.destinationIsOff(e.getKey()));
 		} catch (UnknownTerminalException e) {
 			throw new UnknownTerminalKeyException(key);
+		} catch (UnavailableTerminalException | UnknownCommunicationTypeException e) {
+			// never happens
+			e.printStackTrace();
 		}
 	}
 }

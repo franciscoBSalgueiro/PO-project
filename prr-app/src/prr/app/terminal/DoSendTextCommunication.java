@@ -3,6 +3,7 @@ package prr.app.terminal;
 import prr.Network;
 import prr.app.exceptions.UnknownTerminalKeyException;
 import prr.exceptions.DestinationIsOffException;
+import prr.exceptions.UnavailableTerminalException;
 import prr.exceptions.UnknownTerminalException;
 import prr.terminals.Terminal;
 import pt.tecnico.uilib.menus.CommandException;
@@ -28,6 +29,9 @@ class DoSendTextCommunication extends TerminalCommand {
                         throw new UnknownTerminalKeyException(key);
                 } catch (DestinationIsOffException e) {
                         _display.popup(Message.destinationIsOff(key));
+                } catch (UnavailableTerminalException e) {
+                        // never happens
+                        e.printStackTrace();
                 }
         }
 }

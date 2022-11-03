@@ -21,6 +21,8 @@ import prr.exceptions.NoCurrentCommunicationException;
 import prr.exceptions.TerminalAlreadyIdleException;
 import prr.exceptions.TerminalAlreadyOffException;
 import prr.exceptions.TerminalAlreadySilentException;
+import prr.exceptions.UnavailableTerminalException;
+import prr.exceptions.UnknownCommunicationTypeException;
 import prr.exceptions.UnknownTerminalException;
 import prr.exceptions.UnsupportedAtDestinationException;
 import prr.exceptions.UnsupportedAtOriginException;
@@ -222,7 +224,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         }
 
         public void sendTextCommunication(Network network, String destKey, String msg)
-                        throws DestinationIsOffException, UnknownTerminalException {
+                        throws DestinationIsOffException, UnknownTerminalException, UnavailableTerminalException {
                 Terminal dest = network.getTerminal(destKey);
                 if (!dest.isOn()) { // TODO em todas as exceções tem de tar um create notif
                         dest.addTextObserver(_client);
@@ -235,13 +237,14 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                         _client.addText();
                         dest.addCommunication(comm);
                 } else {
-                        // FIXME maybe throw an exception
+                        throw new UnavailableTerminalException(_key);
                 }
         }
 
         public void startInteractiveCommunication(Network network, String destKey, String type)
                         throws DestinationIsOffException, DestinationIsBusyException, DestinationIsSilentException,
-                        UnknownTerminalException, UnsupportedAtOriginException, UnsupportedAtDestinationException {
+                        UnknownTerminalException, UnsupportedAtOriginException, UnsupportedAtDestinationException,
+                        UnavailableTerminalException, UnknownCommunicationTypeException {
                 Terminal dest = network.getTerminal(destKey);
                 if (type.equals("VIDEO")) {
                         if (!supportsVideoCommunications()) {
@@ -267,7 +270,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                         addCurrentCommunication(comm);
                         dest.addCurrentCommunication(comm);
                 } else {
-                        // FIXME Add exception
+                        throw new UnavailableTerminalException(_key);
                 }
         }
 

@@ -21,7 +21,7 @@ import prr.terminals.Terminal;
 /**
  * Abstract client.
  */
-public class Client implements Serializable, Observer /* FIXME maybe addd more interfaces */ {
+public class Client implements Serializable, Observer, Comparable<Client> {
         /** Serial number for serialization. */
         private static final long serialVersionUID = 202208091753L;
 
@@ -43,15 +43,8 @@ public class Client implements Serializable, Observer /* FIXME maybe addd more i
                 _activeNotifications = true;
         }
 
-        public Client(String key, String name, int taxId, NotificationDeliveryMethod delivery) {
-                _key = key;
-                _name = name;
-                _taxId = taxId;
-                _type = new NormalClient(this, 0, 0);
-                _terminals = new TreeMap<String, Terminal>();
-                _activeNotifications = true;
-                _notifications = new ArrayList<Notification>();
-                _notificationDeliveryMethod = delivery;
+        public void setDeliveryMethod(NotificationDeliveryMethod deliveryMethod) {
+                _notificationDeliveryMethod = deliveryMethod;
         }
 
         public void setType(ClientType type) {
@@ -144,13 +137,6 @@ public class Client implements Serializable, Observer /* FIXME maybe addd more i
                 _type.updateType();
         }
 
-        /*
-         * public void payComm(Terminal t, Communication c) throws
-         * CommunicationAlreadyPaidException {
-         * getCost(c);
-         * }
-         */
-
         public void addNotification(Notification n) {
                 if (!_notifications.contains(n))
                         _notificationDeliveryMethod.deliver(n);
@@ -168,6 +154,17 @@ public class Client implements Serializable, Observer /* FIXME maybe addd more i
 
         public void update(Notification n) {
                 addNotification(n);
+        }
+
+        @Override
+        public int compareTo(Client other) {
+                long debts = getDebts();
+                long otherDebts = other.getDebts();
+                if (debts < otherDebts)
+                        return -1;
+                if (debts > otherDebts)
+                        return 1;
+                return 0;
         }
 
         @Override
