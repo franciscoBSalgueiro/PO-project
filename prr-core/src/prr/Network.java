@@ -77,7 +77,7 @@ public class Network implements Serializable {
 
 	public long getGlobalBalance() {
 		long balance = 0;
-		for (Client c: _clients) balance += c.getBalance();
+		for (Client c: _clients.values()) balance += c.getBalance();
 		return balance;
 	}
 
