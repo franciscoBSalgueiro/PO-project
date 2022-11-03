@@ -184,7 +184,7 @@ public class Network implements Serializable {
 	}
 
 	public Collection<Client> getClientsWithDebt() {
-		return _clients.values().stream().filter(c -> c.getDebts() > 0).sorted().collect(Collectors.toList());
+		return _clients.values().stream().filter(c -> c.getDebts() > 0).sorted(Collections.reverseOrder()).collect(Collectors.toList());
 	}
 
 	public Collection<Client> getClientsWithoutDebt() {

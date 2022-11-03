@@ -97,13 +97,15 @@ abstract public class Terminal implements Serializable {
                 return getPayments() - getDebts();
         }
 
-        public void addTextObserver(Observer o) {
-                _observers.add(o);
-                _textObservers.add(o);
+        public void addTextObserver(Client o) {
+                if (o.activeNotifications()) {
+                        _observers.add(o);
+                        _textObservers.add(o);
+                }
         }
 
-        public void addInteractiveObserver(Observer o) {
-                _observers.add(o);
+        public void addInteractiveObserver(Client o) {
+                if (o.activeNotifications()) _observers.add(o);
         }
 
         public void removeTextObserver(Observer o) {
