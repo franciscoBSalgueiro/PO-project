@@ -38,7 +38,7 @@ public class Client implements Serializable, Observer, Comparable<Client> {
                 _key = key;
                 _name = name;
                 _taxId = taxId;
-                _type = new NormalClient(this, 0, 0);
+                _type = new NormalClient(this);
                 _terminals = new TreeMap<String, Terminal>();
                 _activeNotifications = true;
         }

@@ -12,14 +12,12 @@ public abstract class ClientType implements Serializable {
     /** Serial number for serialization. */
     private static final long serialVersionUID = 202208091753L;
     private Client _client;
-    private int _streakText;
-    private int _streakVideo;
+    private int _streakText = 0;
+    private int _streakVideo = 0;
     private PaymentPlan _plan;
 
-    public ClientType(Client client, int streakText, int streakVideo) {
+    public ClientType(Client client) {
         _client = client;
-        _streakText = streakText;
-        _streakVideo = streakVideo;
     }
 
     private int calculateCost(int cost, Communication comm) {
