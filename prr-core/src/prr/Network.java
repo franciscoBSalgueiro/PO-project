@@ -75,6 +75,12 @@ public class Network implements Serializable {
 		}
 	}
 
+	public long getGlobalBalance() {
+		long balance = 0;
+		for (Client c: _clients) balance += c.getBalance();
+		return balance;
+	}
+
 	public void enableNotifications(String key) throws UnknownClientException, NotificationsAlreadyEnabledException {
 		Client client = getClient(key);
 		client.enableNotifications();
@@ -196,8 +202,8 @@ public class Network implements Serializable {
 		return _terminals.values().stream().filter(t -> t.getInComms().size() == 0).collect(Collectors.toList());
 	}
 
-	public Collection<Terminal> getTerminalsWithPositiveBalance() { /* FIXME balance function */
-		return _terminals.values().stream().filter(t -> t.getDebts() < t.getPayments()).collect(Collectors.toList());
+	public Collection<Terminal> getTerminalsWithPositiveBalance() {
+		return _terminals.values().stream().filter(t -> t.getBalance() > 0).collect(Collectors.toList());
 	}
 
 	/**

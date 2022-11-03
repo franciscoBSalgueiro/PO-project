@@ -108,6 +108,10 @@ public class Client implements Serializable, Observer /* FIXME maybe addd more i
                 return total;
         }
 
+        public long getBalance() {
+                return getPayments() - getDebts();
+        }
+
         public Collection<Communication> getInComms() {
                 List<Communication> comms = new ArrayList<>();
                 for (Terminal t : _terminals.values()) {

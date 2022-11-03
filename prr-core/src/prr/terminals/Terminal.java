@@ -92,6 +92,10 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 return _status.getDebt();
         }
 
+        public long getBalance() {
+                return getPayments()-getDebts();
+        }
+
         public void addTextObserver(Observer o) {
                 _observers.add(o);
                 _textObservers.add(o);
