@@ -13,7 +13,7 @@ public class GoldClient extends ClientType {
         if (getClient().getBalance() < 0) {
             getClient().setType(new NormalClient(getClient(), getStreakText(), getStreakVideo()));
         }
-        if (getStreakVideo() > 5) {
+        if (getStreakVideo() >= 5) {
             getClient().setType(new PlatinumClient(getClient(), getStreakText(), getStreakVideo()));
         }
     }

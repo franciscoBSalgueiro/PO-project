@@ -160,7 +160,7 @@ public class Network implements Serializable {
 	}
 
 	public long getClientPayments(String key) throws UnknownClientException {
-		Client client = _clients.get(key);
+		Client client = getClient(key);
 		return client.getPayments();
 	}
 
@@ -171,7 +171,7 @@ public class Network implements Serializable {
 	}
 
 	public long getClientDebts(String key) throws UnknownClientException {
-		Client client = _clients.get(key);
+		Client client = getClient(key);
 		return client.getDebts();
 	}
 
