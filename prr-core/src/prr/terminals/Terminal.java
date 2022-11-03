@@ -32,7 +32,7 @@ import prr.notifications.Observer;
 /**
  * Abstract terminal.
  */
-abstract public class Terminal implements Serializable /* FIXME maybe addd more interfaces */ {
+abstract public class Terminal implements Serializable {
         /** Serial number for serialization. */
         private static final long serialVersionUID = 202208091753L;
 
@@ -226,7 +226,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         public void sendTextCommunication(Network network, String destKey, String msg)
                         throws DestinationIsOffException, UnknownTerminalException, UnavailableTerminalException {
                 Terminal dest = network.getTerminal(destKey);
-                if (!dest.isOn()) { // TODO em todas as exceções tem de tar um create notif
+                if (!dest.isOn()) {
                         dest.addTextObserver(_client);
                         throw new DestinationIsOffException(destKey);
                 }
