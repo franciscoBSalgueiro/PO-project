@@ -4,10 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -186,23 +184,11 @@ public class Network implements Serializable {
 	}
 
 	public Collection<Client> getClientsWithDebt() {
-		// FIXME repeated code
-		List<Client> clients = new ArrayList<>();
-		for (Client c : _clients.values())
-			if (c.getDebts() > 0)
-				clients.add(c);
-		Collections.sort(clients);
-		return clients;
+		return _clients.values().stream().filter(c -> c.getDebts() > 0).sorted().collect(Collectors.toList());
 	}
 
 	public Collection<Client> getClientsWithoutDebt() {
-		// FIXME repeated code
-		List<Client> clients = new ArrayList<>();
-		for (Client c : _clients.values())
-			if (c.getDebts() == 0)
-				clients.add(c);
-		Collections.sort(clients);
-		return clients;
+		return _clients.values().stream().filter(c -> c.getDebts() == 0).collect(Collectors.toList());
 	}
 
 	/**
