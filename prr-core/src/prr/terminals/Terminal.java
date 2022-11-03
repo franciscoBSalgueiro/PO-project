@@ -156,6 +156,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 }
                 c.pay();
                 _status.addPayment(c.getCost());
+                _client.updateType();
         }
 
         /**

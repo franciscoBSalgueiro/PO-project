@@ -140,6 +140,10 @@ public class Client implements Serializable, Observer /* FIXME maybe addd more i
                 _type.addVideo();
         }
 
+        public void updateType() {
+                _type.updateType();
+        }
+
         /*
          * public void payComm(Terminal t, Communication c) throws
          * CommunicationAlreadyPaidException {
