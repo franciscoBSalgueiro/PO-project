@@ -2,6 +2,7 @@ package prr.clients;
 
 import java.io.Serializable;
 
+import prr.communications.Communication;
 import prr.communications.TextCommunication;
 import prr.communications.VideoCommunication;
 import prr.communications.VoiceCommunication;
@@ -21,16 +22,23 @@ public abstract class ClientType implements Serializable {
         _streakVideo = streakVideo;
     }
 
+    private int calculateCost(int cost, Communication comm) {
+        if (comm.getOrigin().isFriend(comm.getDestination())) {
+            cost *= 0.5;
+        }
+        return cost;
+    }
+
     public int getTextCost(TextCommunication communication) {
-        return _plan.getTextCost(communication);
+        return calculateCost(_plan.getTextCost(communication), communication);
     }
 
     public int getVoiceCost(VoiceCommunication communication) {
-        return _plan.getVoiceCost(communication);
+        return calculateCost(_plan.getVoiceCost(communication), communication);
     }
 
     public int getVideoCost(VideoCommunication communication) {
-        return _plan.getVideoCost(communication);
+        return calculateCost(_plan.getVideoCost(communication), communication);
     }
 
     public Client getClient() {

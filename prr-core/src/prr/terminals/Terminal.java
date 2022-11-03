@@ -195,6 +195,10 @@ abstract public class Terminal implements Serializable {
                 _friends.remove(friendKey, friend);
         }
 
+        public boolean isFriend(Terminal t) {
+                return _friends.containsValue(t);
+        }
+
         public void setStatus(TerminalStatus status) {
                 _status = status;
         }
