@@ -75,12 +75,6 @@ public class Network implements Serializable {
 		}
 	}
 
-	public long getGlobalBalance() {
-		long balance = 0;
-		for (Client c: _clients.values()) balance += c.getBalance();
-		return balance;
-	}
-
 	public void enableNotifications(String key) throws UnknownClientException, NotificationsAlreadyEnabledException {
 		Client client = getClient(key);
 		client.enableNotifications();
@@ -170,9 +164,21 @@ public class Network implements Serializable {
 		return client.getPayments();
 	}
 
+	public long getGlobalPayments() {
+		long payments = 0;
+		for (Client c: _clients.values()) payments += c.getPayments();
+		return payments;
+	}
+
 	public long getClientDebts(String key) throws UnknownClientException {
 		Client client = _clients.get(key);
 		return client.getDebts();
+	}
+
+	public long getGlobalDebts() {
+		long debts = 0;
+		for (Client c: _clients.values()) debts += c.getDebts();
+		return debts;
 	}
 
 	public Collection<Client> getClientsWithDebt() { /* FIXME what was that email about? */

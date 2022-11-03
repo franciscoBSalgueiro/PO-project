@@ -20,9 +20,9 @@ class DoShowClientPaymentsAndDebts extends Command<Network> {
 	protected final void execute() throws CommandException {
         String clientId = stringField("clientId");
 		try {
-		long payments = _receiver.getClientPayments(clientId);
-		long debts = _receiver.getClientDebts(clientId);
-		Message.clientPaymentsAndDebts(clientId, payments, debts);
+			long payments = _receiver.getClientPayments(clientId);
+			long debts = _receiver.getClientDebts(clientId);
+			_display.popup(Message.clientPaymentsAndDebts(clientId, payments, debts));
 		} catch (UnknownClientException e) {
 			throw new UnknownClientKeyException(clientId);
 		}

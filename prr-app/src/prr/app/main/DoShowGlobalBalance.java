@@ -15,6 +15,8 @@ class DoShowGlobalBalance extends Command<Network> {
 
 	@Override
 	protected final void execute() throws CommandException {
-        _display.popup(_receiver.getGlobalBalance());
+		long payments = _receiver.getGlobalPayments();
+		long debts =_receiver.getGlobalDebts();
+		_display.popup(Message.globalPaymentsAndDebts(payments, debts));
 	}
 }
