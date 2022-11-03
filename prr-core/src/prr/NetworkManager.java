@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 import prr.exceptions.ImportFileException;
 import prr.exceptions.MissingFileAssociationException;
@@ -17,7 +16,7 @@ import prr.exceptions.UnavailableFileException;
  * Manage access to network and implement load/save operations.
  */
 
-public class NetworkManager implements Serializable {
+public class NetworkManager {
 
 	/** The network itself. */
 	private Network _network = new Network();
