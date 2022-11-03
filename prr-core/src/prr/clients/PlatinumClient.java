@@ -5,7 +5,7 @@ import prr.plans.PlatinumPaymentPlan;
 public class PlatinumClient extends ClientType {
     public PlatinumClient(Client client, int streakText, int streakVideo) {
         super(client, streakText, streakVideo);
-        _plan = new PlatinumPaymentPlan();
+        setPaymentPlan(new PlatinumPaymentPlan());
     }
 
     @Override

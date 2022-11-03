@@ -13,7 +13,7 @@ public abstract class ClientType implements Serializable {
     private Client _client;
     private int _streakText;
     private int _streakVideo;
-    protected PaymentPlan _plan; // FIXME: maybe should be private?
+    private PaymentPlan _plan;
 
     public ClientType(Client client, int streakText, int streakVideo) {
         _client = client;
@@ -35,6 +35,10 @@ public abstract class ClientType implements Serializable {
 
     public Client getClient() {
         return _client;
+    }
+
+    public void setPaymentPlan(PaymentPlan plan) {
+        _plan = plan;
     }
 
     public void addText() {

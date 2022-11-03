@@ -5,7 +5,7 @@ import prr.plans.NormalPaymentPlan;
 public class NormalClient extends ClientType {
 	public NormalClient(Client client, int streakText, int streakVideo) {
 		super(client, streakText, streakVideo);
-		_plan = new NormalPaymentPlan();
+		setPaymentPlan(new NormalPaymentPlan());
 	}
 
 	@Override

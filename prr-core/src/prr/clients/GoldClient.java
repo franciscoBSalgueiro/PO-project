@@ -5,7 +5,7 @@ import prr.plans.GoldPaymentPlan;
 public class GoldClient extends ClientType {
     public GoldClient(Client client, int streakText, int streakVideo) {
 		super(client, streakText, streakVideo);
-		_plan = new GoldPaymentPlan();
+		setPaymentPlan(new GoldPaymentPlan());
 	}
 
     @Override

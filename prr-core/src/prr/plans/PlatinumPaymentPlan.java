@@ -4,7 +4,7 @@ import prr.communications.TextCommunication;
 import prr.communications.VideoCommunication;
 import prr.communications.VoiceCommunication;
 
-public class PlatinumPaymentPlan extends PaymentPlan {
+public class PlatinumPaymentPlan extends BasePlan {
     @Override
     public int getTextCost(TextCommunication communication) {
         int size = communication.getUnits();
