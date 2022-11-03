@@ -161,9 +161,9 @@ public class Client implements Serializable, Observer, Comparable<Client> {
                 long debts = getDebts();
                 long otherDebts = other.getDebts();
                 if (debts < otherDebts)
-                        return 1;
-                if (debts > otherDebts)
                         return -1;
+                if (debts > otherDebts)
+                        return 1;
                 return 0;
         }
 
