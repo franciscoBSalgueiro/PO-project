@@ -38,7 +38,7 @@ public class Client implements Serializable, Observer /* FIXME maybe addd more i
                 _key = key;
                 _name = name;
                 _taxId = taxId;
-                _type = new NormalClient();
+                _type = new NormalClient(this, 0, 0);
                 _terminals = new TreeMap<String, Terminal>();
                 _activeNotifications = true;
         }
@@ -47,11 +47,15 @@ public class Client implements Serializable, Observer /* FIXME maybe addd more i
                 _key = key;
                 _name = name;
                 _taxId = taxId;
-                _type = new NormalClient();
+                _type = new NormalClient(this, 0, 0);
                 _terminals = new TreeMap<String, Terminal>();
                 _activeNotifications = true;
                 _notifications = new ArrayList<Notification>();
                 _notificationDeliveryMethod = delivery;
+        }
+
+        public void setType(ClientType type) {
+                _type = type;
         }
 
         public int getCost(TextCommunication communication) {
@@ -126,6 +130,14 @@ public class Client implements Serializable, Observer /* FIXME maybe addd more i
                         comms.addAll(t.getOutComms());
                 }
                 return comms;
+        }
+
+        public void addText() {
+                _type.addText();
+        }
+
+        public void addVideo() {
+                _type.addVideo();
         }
 
         /*

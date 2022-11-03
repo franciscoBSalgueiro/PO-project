@@ -24,10 +24,8 @@ import prr.exceptions.TerminalAlreadySilentException;
 import prr.exceptions.UnknownTerminalException;
 import prr.exceptions.UnsupportedAtDestinationException;
 import prr.exceptions.UnsupportedAtOriginException;
-import prr.notifications.BusyToIdle;
 import prr.notifications.Notification;
 import prr.notifications.Observer;
-import prr.notifications.SilentToIdle;
 
 /**
  * Abstract terminal.
@@ -68,6 +66,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         public TerminalStatus getStatus() {
                 return _status;
         }
+
         public String getStatusString() {
                 return _status.toString();
         }
@@ -93,7 +92,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         }
 
         public long getBalance() {
-                return getPayments()-getDebts();
+                return getPayments() - getDebts();
         }
 
         public void addTextObserver(Observer o) {
@@ -115,12 +114,13 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         }
 
         public void notifyAllObservers(Notification n) {
-                for (Observer o: _observers) o.update(n);
+                for (Observer o : _observers)
+                        o.update(n);
                 _observers.clear();
         }
 
         public void notifyTextObservers(Notification n) {
-                for (Observer o: _textObservers) {
+                for (Observer o : _textObservers) {
                         o.update(n);
                         _observers.remove(o);
                 }
@@ -223,7 +223,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
         public void sendTextCommunication(Network network, String destKey, String msg)
                         throws DestinationIsOffException, UnknownTerminalException {
                 Terminal dest = network.getTerminal(destKey);
-                if (!dest.isOn()) { //TODO em todas as exceções tem de tar um create notif
+                if (!dest.isOn()) { // TODO em todas as exceções tem de tar um create notif
                         dest.addTextObserver(_client);
                         throw new DestinationIsOffException(destKey);
                 }
@@ -231,6 +231,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                         TextCommunication comm = network.addTextCommunication(this, _client, dest, msg);
                         addCommunication(comm);
                         _status.addDebt(comm.getCost());
+                        _client.addText();
                         dest.addCommunication(comm);
                 } else {
                         // FIXME maybe throw an exception
@@ -275,6 +276,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe addd more 
                 current.end(duration);
                 long cost = current.calculateCost(_client);
                 _status.addDebt(cost);
+                _client.addVideo();
                 removeCurrentcommunication();
                 destination.removeCurrentcommunication();
                 return cost;
